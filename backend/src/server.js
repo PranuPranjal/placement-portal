@@ -16,6 +16,11 @@ app.use(express.json());
 // Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 app.use('/uploadcv', express.static(path.join(__dirname, '../UploadCV')));
+app.use('/uploadphoto', express.static(path.join(__dirname, '../UploadPhoto')));
+app.use('/uploadaadhar', express.static(path.join(__dirname, '../UploadAadhar')));
+app.use('/uploadugmarks', express.static(path.join(__dirname, '../UploadUGMarksheet')));
+app.use('/uploadxmarks', express.static(path.join(__dirname, '../UploadXMarksheet')));
+app.use('/uploadxiimarks', express.static(path.join(__dirname, '../UploadXIIMarksheet')));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/student', studentRoutes);

@@ -10,6 +10,11 @@ const Profile = () => {
     branchId: ''
   });
   const [cvFile, setCvFile] = React.useState(null);
+  const [photoFile, setPhotoFile] = React.useState(null);
+  const [aadharFile, setAadharFile] = React.useState(null);
+  const [ugMarksheetFile, setUgMarksheetFile] = React.useState(null);
+  const [xMarksheetFile, setXMarksheetFile] = React.useState(null);
+  const [xiiMarksheetFile, setXiiMarksheetFile] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
   React.useEffect(() => {
     const fetchProfile = async () => {
@@ -62,12 +67,32 @@ const Profile = () => {
       if (cvFile) {
         formData.append('cv', cvFile);
       }
+      if (photoFile) {
+        formData.append('photo', photoFile);
+      }
+      if (aadharFile) {
+        formData.append('aadhar', aadharFile);
+      }
+      if (ugMarksheetFile) {
+        formData.append('ugMarksheet', ugMarksheetFile);
+      }
+      if (xMarksheetFile) {
+        formData.append('xMarksheet', xMarksheetFile);
+      }
+      if (xiiMarksheetFile) {
+        formData.append('xiiMarksheet', xiiMarksheetFile);
+      }
       
       console.log('Sending profile update with CV:', { 
         name: editForm.name, 
         cgpa: editForm.cgpa, 
         branchId: editForm.branchId,
-        cvFile: cvFile ? cvFile.name : 'none'
+        cvFile: cvFile ? cvFile.name : 'none',
+        photoFile: photoFile ? photoFile.name : 'none',
+        aadharFile: aadharFile ? aadharFile.name : 'none',
+        ugMarksheetFile: ugMarksheetFile ? ugMarksheetFile.name : 'none',
+        xMarksheetFile: xMarksheetFile ? xMarksheetFile.name : 'none',
+        xiiMarksheetFile: xiiMarksheetFile ? xiiMarksheetFile.name : 'none'       
       });
       
       const token = localStorage.getItem('token');
@@ -100,8 +125,8 @@ const Profile = () => {
   if (!student) return <div className="text-center text-gray-500">Loading...</div>;
   
   return (
-    <div className="bg-white rounded-xl shadow p-6 max-w-md mx-auto">
-      <div className="flex justify-between items-center mb-4">
+    <div className="bg-white rounded-xl shadow p-6 max-w-2xl mx-auto">
+      <div className="flex justify-between items-center mb-6">
         <h3 className="text-lg font-semibold text-blue-700">Profile</h3>
         {!isEditing && (
           <button
@@ -110,6 +135,38 @@ const Profile = () => {
           >
             Edit
           </button>
+        )}
+      </div>
+      
+      {/* Profile Photo Display */}
+      <div className="flex justify-center mb-6">
+        {student.photoPath ? (
+          <img 
+            src={`http://localhost:5000/uploadphoto/${student.photoPath}`}
+            alt="Profile Photo"
+            style={{
+              width: '8rem',
+              height: '8rem',
+              borderRadius: '50%',
+              objectFit: 'contain',
+              border: '2px solid #60a5fa',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+            }}
+          />
+        ) : (
+          <div style={{
+            width: '8rem',
+            height: '8rem',
+            borderRadius: '50%',
+            backgroundColor: '#e5e7eb',
+            border: '2px solid #9ca3af',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+          }}>
+            <span style={{ color: '#6b7280', fontSize: '0.75rem' }}>No Photo</span>
+          </div>
         )}
       </div>
       
@@ -186,6 +243,143 @@ const Profile = () => {
             <small className="text-gray-500">Upload PDF, DOC, or DOCX files only</small>
           </div>
           
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Profile Photo</label>
+            <div className="flex items-center space-x-4">
+              {student.photoPath ? (
+                <img 
+                  src={`http://localhost:5000/uploadphoto/${student.photoPath}`}
+                  alt="Current Profile Photo"
+                  style={{
+                    width: '8rem',
+                    height: '8rem',
+                    borderRadius: '50%',
+                    objectFit: 'contain',
+                    border: '2px solid #60a5fa'
+                  }}
+                />
+              ) : (
+                <div style={{
+                  width: '8rem',
+                  height: '8rem',
+                  borderRadius: '50%',
+                  backgroundColor: '#e5e7eb',
+                  border: '2px solid #9ca3af',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  <span style={{ color: '#6b7280', fontSize: '0.75rem' }}>No Photo</span>
+                </div>
+              )}
+              <div className="flex-1">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => setPhotoFile(e.target.files[0])}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+                <small className="text-gray-500">Upload JPEG, PNG, or JPG files only</small>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Aadhar Upload</label>
+            <input
+              type="file"
+              accept=".pdf,.doc,.docx"
+              onChange={(e) => setAadharFile(e.target.files[0])}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+            {student.aadharPath && (
+              <div className="mt-2">
+                <span className="text-sm text-gray-600">Current Aadhar: </span>
+                <a 
+                  href={`http://localhost:5000/uploadaadhar/${student.aadharPath}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-800 underline text-sm"
+                >
+                  View Current Aadhar
+                </a>
+              </div>
+            )}
+            <small className="text-gray-500">Upload PDF, DOC, or DOCX files only</small>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">UG Marksheet Upload</label>
+            <input
+              type="file"
+              accept=".pdf,.doc,.docx"
+              onChange={(e) => setUgMarksheetFile(e.target.files[0])}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+            {student.ugMarksheetPath && (
+              <div className="mt-2">
+                <span className="text-sm text-gray-600">Current UG Marksheet: </span>
+                <a 
+                  href={`http://localhost:5000/uploadugmarks/${student.ugMarksheetPath}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-800 underline text-sm"
+                >
+                  View Current UG Marksheet
+                </a>
+              </div>
+            )}
+            <small className="text-gray-500">Upload PDF, DOC, or DOCX files only</small>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">X Marksheet Upload</label>
+            <input
+              type="file"
+              accept=".pdf,.doc,.docx"
+              onChange={(e) => setXMarksheetFile(e.target.files[0])}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+            {student.xMarksheetPath && (
+              <div className="mt-2">
+                <span className="text-sm text-gray-600">Current X Marksheet: </span>
+                <a 
+                  href={`http://localhost:5000/uploadxmarks/${student.xMarksheetPath}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-800 underline text-sm"
+                >
+                  View Current X Marksheet
+                </a>
+              </div>
+            )}
+            <small className="text-gray-500">Upload PDF, DOC, or DOCX files only</small>
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">XII Marksheet Upload</label>
+            <input
+              type="file"
+              accept=".pdf,.doc,.docx"
+              onChange={(e) => setXiiMarksheetFile(e.target.files[0])}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+            {student.xiiMarksheetPath && (
+              <div className="mt-2">
+                <span className="text-sm text-gray-600">Current XII Marksheet: </span>
+                <a 
+                  href={`http://localhost:5000/uploadxiimarks/${student.xiiMarksheetPath}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 hover:text-blue-800 underline text-sm"
+                >
+                  View Current XII Marksheet
+                </a>
+              </div>
+            )}
+            <small className="text-gray-500">Upload PDF, DOC, or DOCX files only</small>
+          </div>
+          
           <div className="flex space-x-2">
             <button
               onClick={handleSave}
@@ -204,25 +398,93 @@ const Profile = () => {
           </div>
         </div>
       ) : (
-        <div className="space-y-2">
-          <div><span className="font-medium text-gray-700">Name:</span> {student.name}</div>
-          <div><span className="font-medium text-gray-700">Email:</span> {student.email}</div>
-          <div><span className="font-medium text-gray-700">Branch:</span> {student.branch ? student.branch.name : ''}</div>
-          <div><span className="font-medium text-gray-700">CGPA:</span> {student.cgpa}</div>
-          <div>
-            <span className="font-medium text-gray-700">CV:</span> 
-            {student.cvPath ? (
-              <a 
-                href={`http://localhost:5000/uploadcv/${student.cvPath}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:text-blue-800 underline ml-2"
-              >
-                View CV
-              </a>
-            ) : (
-              <span className="text-gray-500 ml-2">No CV uploaded</span>
-            )}
+        <div className="space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div><span className="font-medium text-gray-700">Name:</span> {student.name}</div>
+            <div><span className="font-medium text-gray-700">Email:</span> {student.email}</div>
+            <div><span className="font-medium text-gray-700">Branch:</span> {student.branch ? student.branch.name : ''}</div>
+            <div><span className="font-medium text-gray-700">CGPA:</span> {student.cgpa}</div>
+          </div>
+          
+          <div className="border-t pt-3">
+            <h4 className="font-medium text-gray-700 mb-2">Documents:</h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm">
+              <div>
+                <span className="font-medium text-gray-600">CV:</span> 
+                {student.cvPath ? (
+                  <a 
+                    href={`http://localhost:5000/uploadcv/${student.cvPath}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800 underline ml-2"
+                  >
+                    View CV
+                  </a>
+                ) : (
+                  <span className="text-gray-500 ml-2">Not uploaded</span>
+                )}
+              </div>
+              <div>
+                <span className="font-medium text-gray-600">Aadhar:</span> 
+                {student.aadharPath ? (
+                  <a 
+                    href={`http://localhost:5000/uploadaadhar/${student.aadharPath}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800 underline ml-2"
+                  >
+                    View Aadhar
+                  </a>
+                ) : (
+                  <span className="text-gray-500 ml-2">Not uploaded</span>
+                )}
+              </div>
+              <div>
+                <span className="font-medium text-gray-600">UG Marksheet:</span> 
+                {student.ugMarksheetPath ? (
+                  <a 
+                    href={`http://localhost:5000/uploadugmarks/${student.ugMarksheetPath}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800 underline ml-2"
+                  >
+                    View UG Marksheet
+                  </a>
+                ) : (
+                  <span className="text-gray-500 ml-2">Not uploaded</span>
+                )}
+              </div>
+              <div>
+                <span className="font-medium text-gray-600">X Marksheet:</span> 
+                {student.xMarksheetPath ? (
+                  <a 
+                    href={`http://localhost:5000/uploadxmarks/${student.xMarksheetPath}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800 underline ml-2"
+                  >
+                    View X Marksheet
+                  </a>
+                ) : (
+                  <span className="text-gray-500 ml-2">Not uploaded</span>
+                )}
+              </div>
+              <div>
+                <span className="font-medium text-gray-600">XII Marksheet:</span> 
+                {student.xiiMarksheetPath ? (
+                  <a 
+                    href={`http://localhost:5000/uploadxiimarks/${student.xiiMarksheetPath}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800 underline ml-2"
+                  >
+                    View XII Marksheet
+                  </a>
+                ) : (
+                  <span className="text-gray-500 ml-2">Not uploaded</span>
+                )}
+              </div>
+            </div>
           </div>
         </div>
       )}

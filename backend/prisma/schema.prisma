@@ -29,6 +29,11 @@ model Student {
   branchId     Int
   cgpa         Float
   cvPath       String?       // Path to uploaded CV file
+  photoPath    String?       // Path to uploaded photo file
+  aadharPath   String?       // Path to uploaded aadhar file
+  ugMarksheetPath String?       // Path to uploaded UG marks file
+  xMarksheetPath String?       // Path to uploaded X marks file
+  xiiMarksheetPath String?       // Path to uploaded XII marks file
   applications Application[]
 }
 

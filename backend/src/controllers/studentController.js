@@ -4,9 +4,24 @@ const prisma = new PrismaClient();
 exports.updateProfile = async (req, res) => {
   const { name, cgpa, branchId } = req.body;
   const userId = req.user.id;
-  const cvFile = req.file; // Uploaded CV file
   
-  console.log('UpdateProfile request:', { name, cgpa, branchId, userId, cvFile: cvFile ? cvFile.filename : 'none' });
+  // Extract files from req.files (multer.fields() puts files in req.files object)
+  const cvFile = req.files && req.files.cv ? req.files.cv[0] : null;
+  const photoFile = req.files && req.files.photo ? req.files.photo[0] : null;
+  const aadharFile = req.files && req.files.aadhar ? req.files.aadhar[0] : null;
+  const ugMarksheetFile = req.files && req.files.ugMarksheet ? req.files.ugMarksheet[0] : null;
+  const xMarksheetFile = req.files && req.files.xMarksheet ? req.files.xMarksheet[0] : null;
+  const xiiMarksheetFile = req.files && req.files.xiiMarksheet ? req.files.xiiMarksheet[0] : null;
+  
+  console.log('UpdateProfile request:', { 
+    name, cgpa, branchId, userId, 
+    cvFile: cvFile ? cvFile.filename : 'none', 
+    photoFile: photoFile ? photoFile.filename : 'none', 
+    aadharFile: aadharFile ? aadharFile.filename : 'none', 
+    ugMarksheetFile: ugMarksheetFile ? ugMarksheetFile.filename : 'none', 
+    xMarksheetFile: xMarksheetFile ? xMarksheetFile.filename : 'none', 
+    xiiMarksheetFile: xiiMarksheetFile ? xiiMarksheetFile.filename : 'none' 
+  });
   
   // Validate input
   if (!name || cgpa === undefined || !branchId) {
@@ -55,6 +70,31 @@ exports.updateProfile = async (req, res) => {
     if (cvFile) {
       updateData.cvPath = cvFile.filename;
       createData.cvPath = cvFile.filename;
+    }
+    // Add photo path if file was uploaded
+    if (photoFile) {
+      updateData.photoPath = photoFile.filename;
+      createData.photoPath = photoFile.filename;
+    }
+    // Add aadhar path if file was uploaded
+    if (aadharFile) {
+      updateData.aadharPath = aadharFile.filename;
+      createData.aadharPath = aadharFile.filename;
+    }
+    // Add UG marks path if file was uploaded
+    if (ugMarksheetFile) {
+      updateData.ugMarksheetPath = ugMarksheetFile.filename;
+      createData.ugMarksheetPath = ugMarksheetFile.filename;
+    }
+    // Add X marks path if file was uploaded
+    if (xMarksheetFile) {
+      updateData.xMarksheetPath = xMarksheetFile.filename;
+      createData.xMarksheetPath = xMarksheetFile.filename;
+    }
+    // Add XII marks path if file was uploaded
+    if (xiiMarksheetFile) {
+      updateData.xiiMarksheetPath = xiiMarksheetFile.filename;
+      createData.xiiMarksheetPath = xiiMarksheetFile.filename;
     }
     
     const student = await prisma.student.upsert({
