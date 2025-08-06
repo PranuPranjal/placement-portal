@@ -41,10 +41,14 @@ exports.applyCompany = async (req, res) => {
   const studentId = req.user.id;
   try {
     const application = await prisma.application.create({
-      data: { studentId, companyId }
+      data: { 
+        studentId: parseInt(studentId), 
+        companyId: parseInt(companyId) 
+      }
     });
     res.json(application);
   } catch (err) {
+    console.error('Apply company error:', err);
     res.status(400).json({ error: 'Could not apply to company' });
   }
 };

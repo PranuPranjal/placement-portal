@@ -2,6 +2,8 @@ import React from 'react';
 
 const EligibleCompanies = () => {
   const [companies, setCompanies] = React.useState([]);
+  const [appliedCompanies, setAppliedCompanies] = React.useState(new Set());
+  const [loading, setLoading] = React.useState({});
   React.useEffect(() => {
     const fetchCompanies = async () => {
       const token = localStorage.getItem('token');
@@ -30,6 +32,29 @@ const EligibleCompanies = () => {
     };
     fetchCompanies();
   }, []);
+
+  const handleApply = async (companyId) => {
+    setLoading(prev => ({ ...prev, [companyId]: true }));
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`/api/student/apply/${companyId}`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (res.ok) {
+        setAppliedCompanies(prev => new Set([...prev, companyId]));
+        alert('Applied successfully!');
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Failed to apply');
+      }
+    } catch (err) {
+      alert('Network error');
+    } finally {
+      setLoading(prev => ({ ...prev, [companyId]: false }));
+    }
+  };
   return (
     <div className="bg-white rounded-xl shadow p-6">
       <h3 className="text-lg font-semibold text-blue-700 mb-4">Eligible Companies</h3>
@@ -40,6 +65,7 @@ const EligibleCompanies = () => {
               <th className="px-4 py-2 text-left">Name</th>
               <th className="px-4 py-2 text-left">Role</th>
               <th className="px-4 py-2 text-left">Salary</th>
+              <th className="px-4 py-2 text-left">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -48,6 +74,19 @@ const EligibleCompanies = () => {
                 <td className="px-4 py-2 font-medium">{c.name}</td>
                 <td className="px-4 py-2">{c.role}</td>
                 <td className="px-4 py-2">{c.salary || c.ctc}</td>
+                <td className="px-4 py-2">
+                  {appliedCompanies.has(c.id) ? (
+                    <span className="text-green-600 font-medium">Applied</span>
+                  ) : (
+                    <button
+                      onClick={() => handleApply(c.id)}
+                      disabled={loading[c.id]}
+                      className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+                    >
+                      {loading[c.id] ? 'Applying...' : 'Apply'}
+                    </button>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>

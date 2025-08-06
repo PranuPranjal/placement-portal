@@ -1,10 +1,16 @@
 import React from 'react';
-import { Routes, Route, Link, Navigate } from 'react-router-dom';
+import { Routes, Route, Link, Navigate, useNavigate } from 'react-router-dom';
 import AddCompany from '../admin/AddCompany';
 import CompaniesInfo from '../admin/CompaniesInfo';
 import StudentsProfile from '../admin/StudentsProfile';
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    navigate('/login');
+  };
   return (
     <div className="min-h-screen flex bg-gray-50">
       <aside className="w-64 bg-white shadow-lg flex flex-col py-8 px-4">
@@ -16,6 +22,12 @@ const AdminDashboard = () => {
             <li><Link to="/admin/students-profile" className="block px-3 py-2 rounded-lg hover:bg-blue-100 text-gray-700 font-medium">Students Profile</Link></li>
           </ul>
         </nav>
+        <button 
+          onClick={handleLogout}
+          className="w-full mt-4 px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium"
+        >
+          Logout
+        </button>
       </aside>
       <main className="flex-1 p-8">
         <Routes>

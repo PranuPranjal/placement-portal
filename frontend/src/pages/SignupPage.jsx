@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const SignupPage = () => {
@@ -6,11 +6,31 @@ const SignupPage = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [branch, setBranch] = useState('');
+  const [branchId, setBranchId] = useState('');
   const [cgpa, setCgpa] = useState('');
+  const [branches, setBranches] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  // Fetch branches when component mounts
+  useEffect(() => {
+    const fetchBranches = async () => {
+      try {
+        const res = await fetch('/api/branches');
+        const data = await res.json();
+        if (res.ok) {
+          setBranches(data);
+          if (data.length > 0) {
+            setBranchId(data[0].id.toString()); // Set default to first branch
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching branches:', err);
+      }
+    };
+    fetchBranches();
+  }, []);
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -22,7 +42,7 @@ const SignupPage = () => {
         email,
         password,
         role,
-        ...(role === 'student' ? { branch, cgpa } : {})
+        ...(role === 'student' ? { branchId, cgpa } : {})
       };
       const res = await fetch('/api/auth/signup', {
         method: 'POST',
@@ -50,8 +70,8 @@ const SignupPage = () => {
           <div style={{ marginBottom: 16 }}>
             <label style={{ fontWeight: 500 }}>Role:</label>
             <select value={role} onChange={e => setRole(e.target.value)} required>
-              <option value="STUDENT">Student</option>
-              <option value="ADMIN">Admin</option>
+              <option value="student">Student</option>
+              <option value="admin">Admin</option>
             </select>
           </div>
           <div style={{ marginBottom: 16 }}>
@@ -70,7 +90,12 @@ const SignupPage = () => {
             <>
               <div style={{ marginBottom: 16 }}>
                 <label>Branch:</label>
-                <input value={branch} onChange={e => setBranch(e.target.value)} required placeholder="Branch" />
+                <select value={branchId} onChange={e => setBranchId(e.target.value)} required>
+                  <option value="">Select Branch</option>
+                  {branches.map(branch => (
+                    <option key={branch.id} value={branch.id}>{branch.name}</option>
+                  ))}
+                </select>
               </div>
               <div style={{ marginBottom: 16 }}>
                 <label>CGPA:</label>

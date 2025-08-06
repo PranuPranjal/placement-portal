@@ -25,6 +25,37 @@ router.get('/companies', async (req, res) => {
   }
 });
 
+// Get applicants for a specific company
+router.get('/companies/:id/applicants', async (req, res) => {
+  try {
+    const companyId = parseInt(req.params.id);
+    const applications = await prisma.application.findMany({
+      where: { companyId },
+      include: {
+        student: {
+          include: { branch: true }
+        },
+        company: true
+      }
+    });
+    
+    const applicants = applications.map(app => ({
+      id: app.student.id,
+      name: app.student.name,
+      email: app.student.email,
+      branch: app.student.branch.name,
+      cgpa: app.student.cgpa,
+      status: app.status,
+      appliedAt: app.createdAt || new Date()
+    }));
+    
+    res.json(applicants);
+  } catch (err) {
+    console.error('Error fetching company applicants:', err);
+    res.status(500).json({ error: 'Failed to fetch applicants' });
+  }
+});
+
 router.get('/users', viewUsers);
 
 module.exports = router;
