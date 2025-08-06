@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 const AddCompany = () => {
   const [name, setName] = useState('');
   const [role, setRole] = useState('');
+  const [password, setPassword] = useState('');
   const [deadline, setDeadline] = useState('');
   const [description, setDescription] = useState('');
   const [cgpaCriteria, setCgpaCriteria] = useState('');
@@ -25,6 +26,7 @@ const AddCompany = () => {
     const formData = new FormData();
     formData.append('name', name);
     formData.append('role', role);
+    formData.append('password', password);
     formData.append('salary', ctc);
     formData.append('cgpaCriteria', cgpaCriteria);
     formData.append('deadline', deadline);
@@ -35,7 +37,12 @@ const AddCompany = () => {
       formData.append('companyFile', file);
     }
     
-    const res = await fetch('/api/admin/company', {
+    console.log('Sending request to backend with data:', {
+      name, role, salary: ctc, cgpaCriteria, deadline, description,
+      allowedBranches: selectedBranches, password: password ? '***' : 'undefined'
+    });
+    
+    const res = await fetch('http://localhost:5000/api/admin/company', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`
@@ -43,11 +50,19 @@ const AddCompany = () => {
       },
       body: formData
     });
+    
+    console.log('Response status:', res.status);
+    console.log('Response ok:', res.ok);
+    
     if (res.ok) {
-      alert(`Company ${name} added!`);
-      setName(''); setRole(''); setCtc('');
+      const responseData = await res.json();
+      console.log('Success response:', responseData);
+      alert(`Company ${name} added! User created: ${responseData.user?.email}`);
+      setName(''); setRole(''); setCtc(''); setPassword('');
     } else {
-      alert('Failed to add company');
+      const errorData = await res.text();
+      console.error('Error response:', errorData);
+      alert('Failed to add company: ' + errorData);
     }
   };
 
@@ -78,6 +93,7 @@ const AddCompany = () => {
       </div>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input placeholder="Company Name" value={name} onChange={e => setName(e.target.value)} required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        <input placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
         <input placeholder="Role" value={role} onChange={e => setRole(e.target.value)} required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
         <input placeholder='CGPA Criteria' value={cgpaCriteria} onChange={e => setCgpaCriteria(e.target.value)} required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
         <input placeholder="Salary" value={ctc} onChange={e => setCtc(e.target.value)} required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />

@@ -14,11 +14,13 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  name     String
-  email    String @unique
-  password String
-  role     String
+  id        Int     @id @default(autoincrement())
+  name      String
+  email     String  @unique
+  password  String
+  role      String
+  companyId Int?    // Optional reference to company for company users
+  company   Company? @relation(fields: [companyId], references: [id])
 }
 
 model Student {
@@ -47,6 +49,7 @@ model Branch {
 model Company {
   id              Int                     @id @default(autoincrement())
   name            String
+  password        String?                // Optional password for existing companies
   role            String
   salary          Float
   cgpaCriteria    Float                  // CGPA eligibility
@@ -55,6 +58,7 @@ model Company {
   filePath        String?                // Path to uploaded company file
   allowedBranches CompanyAllowedBranch[]
   applications    Application[]
+  users           User[]                 // Users associated with this company
 }
 
 model CompanyAllowedBranch {

@@ -13,33 +13,8 @@ router.get('/branches', async (req, res) => {
   res.json(branches);
 });
 
-// Add company with file upload
-router.post('/company', upload.single('companyFile'), async (req, res) => {
-  try {
-    const { name, role, salary, cgpaCriteria, deadline, description, allowedBranchIds } = req.body;
-    const filePath = req.file ? req.file.filename : null;
-    
-    const company = await prisma.company.create({
-      data: {
-        name,
-        role,
-        salary: parseFloat(salary),
-        cgpaCriteria: parseFloat(cgpaCriteria),
-        deadline: new Date(deadline),
-        description,
-        filePath, // Store file path
-        allowedBranches: {
-          create: JSON.parse(allowedBranchIds).map(branchId => ({ branchId: parseInt(branchId) }))
-        }
-      }
-    });
-    
-    res.json(company);
-  } catch (err) {
-    console.error('Add company error:', err);
-    res.status(400).json({ error: 'Failed to add company' });
-  }
-});
+// Add company with file upload - use controller function
+router.post('/company', upload.single('companyFile'), addCompany);
 
 // Return all companies for admin
 router.get('/companies', async (req, res) => {

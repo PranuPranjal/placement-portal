@@ -22,6 +22,8 @@ const LoginPage = () => {
         const payload = JSON.parse(atob(data.token.split('.')[1]));
         if (payload.role === 'admin') {
           navigate('/admin/add-company');
+        } else if (payload.role === 'company') {
+          navigate('/company/applicants');
         } else {
           navigate('/student/eligible-companies');
         }
