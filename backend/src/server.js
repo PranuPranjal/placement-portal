@@ -15,6 +15,7 @@ app.use(express.json());
 
 // Serve uploaded files statically
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use('/uploadcv', express.static(path.join(__dirname, '../UploadCV')));
 
 app.use('/api/auth', authRoutes);
 app.use('/api/student', studentRoutes);

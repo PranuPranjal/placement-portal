@@ -4,15 +4,69 @@ const prisma = new PrismaClient();
 exports.updateProfile = async (req, res) => {
   const { name, cgpa, branchId } = req.body;
   const userId = req.user.id;
+  const cvFile = req.file; // Uploaded CV file
+  
+  console.log('UpdateProfile request:', { name, cgpa, branchId, userId, cvFile: cvFile ? cvFile.filename : 'none' });
+  
+  // Validate input
+  if (!name || cgpa === undefined || !branchId) {
+    console.log('Validation failed: missing required fields');
+    return res.status(400).json({ error: 'Name, CGPA, and Branch are required' });
+  }
+  
+  if (isNaN(cgpa) || cgpa < 0 || cgpa > 10) {
+    console.log('Validation failed: invalid CGPA');
+    return res.status(400).json({ error: 'CGPA must be a number between 0 and 10' });
+  }
+  
+  if (isNaN(branchId)) {
+    console.log('Validation failed: invalid branchId');
+    return res.status(400).json({ error: 'Invalid branch ID' });
+  }
+  
   try {
+    // Get user email from User table since it's not in JWT token
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { email: true }
+    });
+    
+    if (!user) {
+      console.log('User not found');
+      return res.status(404).json({ error: 'User not found' });
+    }
+    
+    // Prepare update data
+    const updateData = {
+      name,
+      cgpa: parseFloat(cgpa),
+      branchId: parseInt(branchId)
+    };
+    
+    const createData = {
+      id: userId,
+      name,
+      email: user.email,
+      cgpa: parseFloat(cgpa),
+      branchId: parseInt(branchId)
+    };
+    
+    // Add CV path if file was uploaded
+    if (cvFile) {
+      updateData.cvPath = cvFile.filename;
+      createData.cvPath = cvFile.filename;
+    }
+    
     const student = await prisma.student.upsert({
       where: { id: userId },
-      update: { name, cgpa, branchId },
-      create: { id: userId, name, cgpa, branchId }
+      update: updateData,
+      create: createData
     });
+    console.log('Profile updated successfully:', student);
     res.json(student);
   } catch (err) {
-    res.status(400).json({ error: 'Could not update profile' });
+    console.error('Database error in updateProfile:', err);
+    res.status(400).json({ error: 'Could not update profile: ' + err.message });
   }
 };
 
@@ -48,17 +102,32 @@ exports.eligibleCompanies = async (req, res) => {
 exports.applyCompany = async (req, res) => {
   const { companyId } = req.params;
   const studentId = req.user.id;
+  const cvFile = req.file; // Uploaded CV file
+  
+  console.log('Apply company request:', { companyId, studentId, cvFile: cvFile ? cvFile.filename : 'none' });
+  
   try {
+    // If a new CV was uploaded, update the student's CV
+    if (cvFile) {
+      await prisma.student.update({
+        where: { id: studentId },
+        data: { cvPath: cvFile.filename }
+      });
+      console.log('Updated student CV:', cvFile.filename);
+    }
+    
     const application = await prisma.application.create({
       data: { 
         studentId: parseInt(studentId), 
         companyId: parseInt(companyId) 
       }
     });
+    
+    console.log('Application created successfully:', application);
     res.json(application);
   } catch (err) {
     console.error('Apply company error:', err);
-    res.status(400).json({ error: 'Could not apply to company' });
+    res.status(400).json({ error: 'Could not apply to company: ' + err.message });
   }
 };
 

@@ -3,14 +3,25 @@ import React from 'react';
 const EligibleCompanies = () => {
   const [companies, setCompanies] = React.useState([]);
   const [appliedCompanies, setAppliedCompanies] = React.useState(new Set());
-  const [loading, setLoading] = React.useState({});
+  const [loading, setLoading] = React.useState(true);
+  const [showApplicationModal, setShowApplicationModal] = React.useState(false);
+  const [selectedCompany, setSelectedCompany] = React.useState(null);
+  const [cvFile, setCvFile] = React.useState(null);
+  const [currentCv, setCurrentCv] = React.useState(null);
+
   React.useEffect(() => {
-    const fetchCompanies = async () => {
+    fetchCompanies();
+    fetchAppliedCompanies();
+    fetchCurrentCv();
+  }, []);
+
+  const fetchCompanies = async () => {
+    try {
       const token = localStorage.getItem('token');
       console.log('Token from localStorage:', token);
       console.log('Making request to /api/student/companies');
       
-      const res = await fetch('/api/student/companies', {
+      const res = await fetch('http://localhost:5000/api/student/companies', {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -29,9 +40,42 @@ const EligibleCompanies = () => {
         console.error('JSON parsing error:', err);
         console.log('Response text:', await res.text());
       }
-    };
-    fetchCompanies();
-  }, []);
+    } catch (err) {
+      console.error('Failed to fetch companies');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchAppliedCompanies = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('http://localhost:5000/api/student/applied', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setAppliedCompanies(new Set(data));
+      }
+    } catch (err) {
+      console.error('Failed to fetch applied companies');
+    }
+  };
+
+  const fetchCurrentCv = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('http://localhost:5000/api/student/profile', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (res.ok && data.cvPath) {
+        setCurrentCv(data.cvPath);
+      }
+    } catch (err) {
+      console.error('Failed to fetch current CV');
+    }
+  };
 
   const handleApply = async (companyId) => {
     setLoading(prev => ({ ...prev, [companyId]: true }));
@@ -55,6 +99,45 @@ const EligibleCompanies = () => {
       setLoading(prev => ({ ...prev, [companyId]: false }));
     }
   };
+
+  const openApplicationModal = (company) => {
+    setSelectedCompany(company);
+    setShowApplicationModal(true);
+  };
+
+  const closeApplicationModal = () => {
+    setShowApplicationModal(false);
+    setSelectedCompany(null);
+    setCvFile(null);
+  };
+
+  const applyToCompany = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const formData = new FormData();
+      if (cvFile) {
+        formData.append('cv', cvFile);
+      }
+      const res = await fetch(`http://localhost:5000/api/student/apply/${selectedCompany.id}`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+        body: formData
+      });
+      
+      if (res.ok) {
+        setAppliedCompanies(prev => new Set([...prev, selectedCompany.id]));
+        alert('Applied successfully!');
+      } else {
+        const data = await res.json();
+        alert(data.error || 'Failed to apply');
+      }
+    } catch (err) {
+      alert('Network error');
+    } finally {
+      closeApplicationModal();
+    }
+  };
+
   return (
     <div className="bg-white rounded-xl shadow p-6">
       <h3 className="text-lg font-semibold text-blue-700 mb-4">Eligible Companies</h3>
@@ -98,11 +181,10 @@ const EligibleCompanies = () => {
                     <span className="text-green-600 font-medium">Applied</span>
                   ) : (
                     <button
-                      onClick={() => handleApply(c.id)}
-                      disabled={loading[c.id]}
-                      className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+                      onClick={() => openApplicationModal(c)}
+                      className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
                     >
-                      {loading[c.id] ? 'Applying...' : 'Apply'}
+                      Apply
                     </button>
                   )}
                 </td>
@@ -111,6 +193,65 @@ const EligibleCompanies = () => {
           </tbody>
         </table>
       </div>
+      
+      {/* Application Modal */}
+      {showApplicationModal && selectedCompany && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <h3 className="text-lg font-semibold mb-4">Apply to {selectedCompany.name}</h3>
+            
+            <div className="space-y-4">
+              <div>
+                <p className="text-sm text-gray-600 mb-2">Role: {selectedCompany.role}</p>
+                <p className="text-sm text-gray-600 mb-2">Salary: {selectedCompany.salary || selectedCompany.ctc}</p>
+                <p className="text-sm text-gray-600 mb-4">Deadline: {new Date(selectedCompany.deadline).toLocaleDateString()}</p>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Current CV:</label>
+                {currentCv ? (
+                  <a 
+                    href={`http://localhost:5000/uploadcv/${currentCv}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800 underline text-sm"
+                  >
+                    View Current CV
+                  </a>
+                ) : (
+                  <span className="text-gray-500 text-sm">No CV uploaded</span>
+                )}
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Upload New CV (Optional):</label>
+                <input
+                  type="file"
+                  accept=".pdf,.doc,.docx"
+                  onChange={(e) => setCvFile(e.target.files[0])}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+                <small className="text-gray-500">Leave empty to use current CV</small>
+              </div>
+              
+              <div className="flex space-x-2 pt-4">
+                <button
+                  onClick={applyToCompany}
+                  className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                >
+                  Apply Now
+                </button>
+                <button
+                  onClick={closeApplicationModal}
+                  className="flex-1 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

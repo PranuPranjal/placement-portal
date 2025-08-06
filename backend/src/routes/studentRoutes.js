@@ -1,6 +1,7 @@
 const express = require('express');
 const { authenticateUser } = require('../middleware/authMiddleware');
 const { updateProfile, eligibleCompanies, applyCompany, passCompany } = require('../controllers/studentController');
+const uploadCV = require('../middleware/uploadCV');
 const router = express.Router();
 
 router.use(authenticateUser);
@@ -40,9 +41,9 @@ router.get('/applied', async (req, res) => {
   }
 });
 
-router.put('/profile', updateProfile);
+router.put('/profile', uploadCV.single('cv'), updateProfile);
 router.get('/companies', eligibleCompanies);
-router.post('/apply/:companyId', applyCompany);
+router.post('/apply/:companyId', uploadCV.single('cv'), applyCompany);
 router.post('/pass/:companyId', passCompany);
 
 module.exports = router;

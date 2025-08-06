@@ -28,6 +28,7 @@ model Student {
   branch       Branch        @relation(fields: [branchId], references: [id])
   branchId     Int
   cgpa         Float
+  cvPath       String?       // Path to uploaded CV file
   applications Application[]
 }
 
