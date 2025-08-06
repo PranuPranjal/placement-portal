@@ -65,6 +65,9 @@ const EligibleCompanies = () => {
               <th className="px-4 py-2 text-left">Name</th>
               <th className="px-4 py-2 text-left">Role</th>
               <th className="px-4 py-2 text-left">Salary</th>
+              <th className="px-4 py-2 text-left">Deadline</th>
+              <th className="px-4 py-2 text-left">Description</th>
+              <th className="px-4 py-2 text-left">File</th>
               <th className="px-4 py-2 text-left">Action</th>
             </tr>
           </thead>
@@ -74,6 +77,22 @@ const EligibleCompanies = () => {
                 <td className="px-4 py-2 font-medium">{c.name}</td>
                 <td className="px-4 py-2">{c.role}</td>
                 <td className="px-4 py-2">{c.salary || c.ctc}</td>
+                <td className="px-4 py-2">{c.deadline}</td>
+                <td className="px-4 py-2">{c.description}</td>
+                <td className="px-4 py-2">
+                  {c.filePath ? (
+                    <a 
+                      href={`http://localhost:5000/uploads/${c.filePath}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 underline"
+                    >
+                      View
+                    </a>
+                  ) : (
+                    <span className="text-gray-500">No file</span>
+                  )}
+                </td>
                 <td className="px-4 py-2">
                   {appliedCompanies.has(c.id) ? (
                     <span className="text-green-600 font-medium">Applied</span>

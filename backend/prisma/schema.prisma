@@ -46,6 +46,7 @@ model Company {
   cgpaCriteria    Float                  // CGPA eligibility
   deadline        DateTime               // Application deadline
   description     String?
+  filePath        String?                // Path to uploaded company file
   allowedBranches CompanyAllowedBranch[]
   applications    Application[]
 }
