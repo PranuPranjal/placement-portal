@@ -41,9 +41,9 @@ const LoginPage = () => {
   const token = localStorage.getItem('token');
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
-        <h2 className="text-2xl font-bold mb-8 text-center text-blue-800">Placement Portal Login</h2>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f7fafc' }}>
+      <div className="card" style={{ width: 400 }}>
+        <h2 className="text-2xl font-bold mb-8 text-center text-blue-800">Login</h2>
         {token && (
           <button onClick={handleLogout} className="btn" style={{ width: '100%', marginBottom: 16 }}>
             Logout

@@ -23,10 +23,19 @@ exports.eligibleCompanies = async (req, res) => {
     if (!student) {
       return res.status(404).json({ error: 'Student profile not found' });
     }
+    // Get companies the student has already applied to
+    const appliedCompanies = await prisma.application.findMany({
+      where: { studentId: userId },
+      select: { companyId: true }
+    });
+    const appliedCompanyIds = appliedCompanies.map(app => app.companyId);
+    
+    // Get eligible companies excluding those already applied to
     const companies = await prisma.company.findMany({
       where: {
         cgpaCriteria: { lte: student.cgpa },
-        allowedBranches: { some: { branchId: student.branchId } }
+        allowedBranches: { some: { branchId: student.branchId } },
+        id: { notIn: appliedCompanyIds } // Exclude applied companies
       }
     });
     res.json(companies);
