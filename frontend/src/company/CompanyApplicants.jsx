@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 
 const CompanyApplicants = () => {
   const [applicants, setApplicants] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState('All');
+  const [branches, setBranches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -22,6 +24,11 @@ const CompanyApplicants = () => {
       if (response.ok) {
         const data = await response.json();
         setApplicants(data);
+
+        const uniqueBranches = Array.from(
+          new Set(data.map(app => app.student.branch))
+        );
+        setBranches(uniqueBranches);
       } else {
         console.error('Failed to fetch applicants');
       }
@@ -31,6 +38,7 @@ const CompanyApplicants = () => {
       setLoading(false);
     }
   };
+
 
   const updateApplicationStatus = async (applicationId, status) => {
     try {
@@ -78,7 +86,19 @@ const CompanyApplicants = () => {
   return (
     <div>
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Student Applicants</h1>
-      
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-gray-700 mb-1">Filter by Branch:</label>
+        <select
+          value={selectedBranch}
+          onChange={(e) => setSelectedBranch(e.target.value)}
+          className="border border-gray-300 rounded-md px-3 py-2 text-sm"
+        >
+          <option value="All">All</option>
+          {branches.map((branch, index) => (
+            <option key={index} value={branch}>{branch}</option>
+          ))}
+        </select>
+      </div>
       {applicants.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-8 text-center">
           <p className="text-gray-600">No students have applied yet.</p>
@@ -95,6 +115,9 @@ const CompanyApplicants = () => {
                   Branch
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Role
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   CGPA
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -109,7 +132,9 @@ const CompanyApplicants = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {applicants.map((applicant) => (
+              {applicants
+                .filter(applicant => selectedBranch === 'All' || applicant.student.branch === selectedBranch)
+                .map((applicant) => (
                 <tr key={applicant.applicationId} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
@@ -142,6 +167,9 @@ const CompanyApplicants = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {applicant.student.branch}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {applicant.student.role}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {applicant.student.cgpa}

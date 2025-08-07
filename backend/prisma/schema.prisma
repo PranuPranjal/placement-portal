@@ -77,6 +77,7 @@ model Application {
   studentId  Int
   company    Company            @relation(fields: [companyId], references: [id])
   companyId  Int
+  role       String?            // Role applied for
   status     ApplicationStatus @default(PENDING)
 
   @@unique([studentId, companyId])

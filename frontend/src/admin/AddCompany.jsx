@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 const AddCompany = () => {
   const [name, setName] = useState('');
-  const [role, setRole] = useState('');
+  const [role, setRole] = useState(['']);
   const [password, setPassword] = useState('');
   const [deadline, setDeadline] = useState('');
   const [description, setDescription] = useState('');
@@ -33,7 +33,7 @@ const AddCompany = () => {
     // Create FormData for file upload
     const formData = new FormData();
     formData.append('name', name);
-    formData.append('role', role);
+    formData.append('role', role.join(','));
     formData.append('password', password);
     formData.append('salary', ctc);
     formData.append('cgpaCriteria', cgpaCriteria);
@@ -67,7 +67,7 @@ const AddCompany = () => {
       const responseData = await res.json();
       console.log('Success response:', responseData);
       alert(`Company ${name} added! User created: ${responseData.user?.email}`);
-      setName(''); setRole(''); setCtc(''); setPassword('');
+      setName(''); setRole(['']); setCtc(''); setPassword('');
     } else {
       const errorData = await res.text();
       console.error('Error response:', errorData);
@@ -103,7 +103,30 @@ const AddCompany = () => {
       <form onSubmit={handleSubmit} className="space-y-4">
         <input placeholder="Company Name" value={name} onChange={e => setName(e.target.value)} required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
         <input placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
-        <input placeholder="Role" value={role} onChange={e => setRole(e.target.value)} required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Roles</label>
+          {role.map((r, index) => (
+            <input
+              key={index}
+              placeholder={`Role ${index + 1}`}
+              value={r}
+              onChange={e => {
+                const newRole = [...role];
+                newRole[index] = e.target.value;
+                setRole(newRole);
+              }}
+              required
+              className="w-full mb-2 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          ))}
+          <button
+            type="button"
+            onClick={() => setRole([...role, ''])}
+            className="text-blue-600 hover:text-blue-800 text-sm underline"
+          >
+            + Add Role
+          </button>
+        </div>
         <input placeholder='CGPA Criteria' value={cgpaCriteria} onChange={e => setCgpaCriteria(e.target.value)} required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
         <input placeholder="Salary" value={ctc} onChange={e => setCtc(e.target.value)} required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
         <input placeholder="Deadline" type='datetime-local' value={deadline} onChange={e => setDeadline(e.target.value)} required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />

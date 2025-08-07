@@ -94,6 +94,7 @@ router.get('/applicants', async (req, res) => {
         name: app.student.name,
         email: app.student.email,
         branch: app.student.branch.name,
+        role: app.role, // Role applied for (from the application)
         cgpa: app.student.cgpa,
         cvPath: app.student.cvPath,
         photoPath: app.student.photoPath,

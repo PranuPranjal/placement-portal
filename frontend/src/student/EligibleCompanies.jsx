@@ -3,6 +3,7 @@ import React from 'react';
 const EligibleCompanies = () => {
   const [companies, setCompanies] = React.useState([]);
   const [appliedCompanies, setAppliedCompanies] = React.useState(new Set());
+  const [selectedRole, setSelectedRole] = React.useState('');
   const [loading, setLoading] = React.useState(true);
   const [showApplicationModal, setShowApplicationModal] = React.useState(false);
   const [selectedCompany, setSelectedCompany] = React.useState(null);
@@ -102,8 +103,10 @@ const EligibleCompanies = () => {
 
   const openApplicationModal = (company) => {
     setSelectedCompany(company);
+    setSelectedRole('');  // Reset role selection
     setShowApplicationModal(true);
   };
+
 
   const closeApplicationModal = () => {
     setShowApplicationModal(false);
@@ -112,18 +115,25 @@ const EligibleCompanies = () => {
   };
 
   const applyToCompany = async () => {
+    if (!selectedRole) {
+      alert('Please select a role before applying.');
+      return;
+    }
+
     try {
       const token = localStorage.getItem('token');
       const formData = new FormData();
+      formData.append('selectedRole', selectedRole); // send selected role
       if (cvFile) {
         formData.append('cv', cvFile);
       }
+
       const res = await fetch(`http://localhost:5000/api/student/apply/${selectedCompany.id}`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${token}` },
         body: formData
       });
-      
+
       if (res.ok) {
         setAppliedCompanies(prev => new Set([...prev, selectedCompany.id]));
         alert('Applied successfully!');
@@ -137,6 +147,7 @@ const EligibleCompanies = () => {
       closeApplicationModal();
     }
   };
+
 
   return (
     <div className="bg-white rounded-xl shadow p-6">
@@ -202,7 +213,24 @@ const EligibleCompanies = () => {
             
             <div className="space-y-4">
               <div>
-                <p className="text-sm text-gray-600 mb-2">Role: {selectedCompany.role}</p>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Select Role:</label>
+                  <div className="space-y-1">
+                    {selectedCompany.role.split(',').map((r, i) => (
+                      <label key={i} className="flex items-center space-x-2">
+                        <input
+                          type="radio"
+                          name="selectedRole"
+                          value={r.trim()}
+                          checked={selectedRole === r.trim()}
+                          onChange={(e) => setSelectedRole(e.target.value)}
+                          className="text-blue-600 focus:ring-blue-500"
+                        />
+                        <span>{r.trim()}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
                 <p className="text-sm text-gray-600 mb-2">Salary: {selectedCompany.salary || selectedCompany.ctc}</p>
                 <p className="text-sm text-gray-600 mb-4">Deadline: {new Date(selectedCompany.deadline).toLocaleDateString()}</p>
               </div>

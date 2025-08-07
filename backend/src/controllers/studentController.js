@@ -139,10 +139,11 @@ exports.eligibleCompanies = async (req, res) => {
 
 exports.applyCompany = async (req, res) => {
   const { companyId } = req.params;
+  const selectedRole = req.body.selectedRole; // Get selectedRole from FormData
   const studentId = req.user.id;
   const cvFile = req.file; // Uploaded CV file
   
-  console.log('Apply company request:', { companyId, studentId, cvFile: cvFile ? cvFile.filename : 'none' });
+  console.log('Apply company request:', { companyId, studentId, selectedRole, cvFile: cvFile ? cvFile.filename : 'none' });
   
   try {
     // If a new CV was uploaded, update the student's CV
@@ -157,7 +158,8 @@ exports.applyCompany = async (req, res) => {
     const application = await prisma.application.create({
       data: { 
         studentId: parseInt(studentId), 
-        companyId: parseInt(companyId) 
+        companyId: parseInt(companyId),
+        role: selectedRole // Store the role applied for
       }
     });
     
