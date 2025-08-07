@@ -2,6 +2,14 @@ const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcryptjs');
 const prisma = new PrismaClient();
 
+function parseLocalDateTime(input) {
+  const [datePart, timePart] = input.split('T');
+  const [year, month, day] = datePart.split('-').map(Number);
+  const [hour, minute] = timePart.split(':').map(Number);
+  return new Date(year, month - 1, day, hour, minute); // local date
+}
+
+
 exports.addCompany = async (req, res) => {
   const { name, role, salary, cgpaCriteria, deadline, description, allowedBranchIds, password } = req.body;
   
@@ -12,7 +20,7 @@ exports.addCompany = async (req, res) => {
     const company = await prisma.company.create({
       data: {
         name, role, salary: parseFloat(salary), cgpaCriteria: parseFloat(cgpaCriteria), 
-        deadline: new Date(deadline), description, password,
+        deadline: parseLocalDateTime(deadline), description, password,
         filePath: req.file ? req.file.filename : null,
         allowedBranches: {
           create: JSON.parse(allowedBranchIds).map(branchId => ({ branchId: parseInt(branchId) }))

@@ -68,7 +68,15 @@ const CompaniesInfo = () => {
                 <td className="px-4 py-2 font-medium">{c.name}</td>
                 <td className="px-4 py-2">{c.role}</td>
                 <td className="px-4 py-2">{c.salary || c.ctc}</td>
-                <td className="px-4 py-2">{new Date(c.deadline).toLocaleDateString()}</td>
+                <td className="px-4 py-2">
+                  {new Date(c.deadline).toLocaleString('en-IN', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                </td>
                 <td className="px-4 py-2">{c.description}</td>
                 <td className="px-4 py-2">
                   {c.filePath ? (

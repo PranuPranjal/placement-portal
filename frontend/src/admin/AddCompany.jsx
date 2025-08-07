@@ -12,6 +12,14 @@ const AddCompany = () => {
   const [branches, setBranches] = useState([]);
   const [selectedBranches, setSelectedBranches] = useState([]);
 
+  // function toLocalISOString(datetimeLocal) {
+  //   const [datePart, timePart] = datetimeLocal.split('T');
+  //   const [year, month, day] = datePart.split('-');
+  //   const [hour, minute] = timePart.split(':');
+  //   const localDate = new Date(year, month - 1, day, hour, minute);
+  //   return localDate.toISOString();
+  // }
+
   React.useEffect(() => {
     fetch('/api/branches')
       .then(res => res.json())
@@ -29,6 +37,7 @@ const AddCompany = () => {
     formData.append('password', password);
     formData.append('salary', ctc);
     formData.append('cgpaCriteria', cgpaCriteria);
+    // formData.append('deadline', toLocalISOString(deadline));
     formData.append('deadline', deadline);
     formData.append('description', description);
     formData.append('allowedBranchIds', JSON.stringify(selectedBranches.map(Number)));
