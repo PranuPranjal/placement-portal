@@ -1,0 +1,24 @@
+{
+  "name": "placement-portal",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\"",
+    "dev:backend": "npm run dev --prefix backend",
+    "start:backend": "npm run start --prefix backend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "build:frontend": "npm run build --prefix frontend",
+    "lint:frontend": "npm run lint --prefix frontend",
+    "preview:frontend": "npm run preview --prefix frontend",
+    "install:frontend": "npm install --prefix frontend",
+    "install:backend": "npm install --prefix backend",
+    "build": "concurrently \"npm run build --prefix backend\" \"npm run build --prefix frontend\""
+  },
+  "devDependencies": {
+    "@sonar/scan": "^4.3.0",
+    "concurrently": "^8.2.2"
+  },
+  "dependencies": {
+    "react-google-recaptcha": "^3.1.0"
+  }
+}
