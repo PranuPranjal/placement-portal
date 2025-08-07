@@ -21,8 +21,6 @@ exports.addCompany = async (req, res) => {
     });
     console.log('Company created successfully:', company.id);
     
-    // Hash password for user account
-    console.log('Hashing password for user account...');
     const hashedPassword = await bcrypt.hash(password, 10);
     
     const companyEmail = name.toLowerCase().replace(/\s+/g, '') + '@company.nitap';

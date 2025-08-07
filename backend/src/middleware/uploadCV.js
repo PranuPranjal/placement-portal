@@ -2,25 +2,20 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Create UploadCV directory if it doesn't exist
 const uploadCVDir = path.join(__dirname, '../../UploadCV');
 if (!fs.existsSync(uploadCVDir)) {
   fs.mkdirSync(uploadCVDir, { recursive: true });
 }
-
-// Configure multer storage for CVs
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, uploadCVDir);
   },
   filename: (req, file, cb) => {
-    // Generate unique filename with timestamp for CV
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
     cb(null, 'cv-' + uniqueSuffix + path.extname(file.originalname));
   }
 });
 
-// File filter for CVs (PDF, DOC, DOCX only)
 const fileFilter = (req, file, cb) => {
   const allowedTypes = ['.pdf', '.doc', '.docx'];
   const fileExtension = path.extname(file.originalname).toLowerCase();
@@ -32,11 +27,10 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// Configure multer
 const uploadCV = multer({
   storage: storage,
   limits: {
-    fileSize: 5 * 1024 * 1024 // 5MB limit for CVs
+    fileSize: 5 * 1024 * 1024 
   },
   fileFilter: fileFilter
 });

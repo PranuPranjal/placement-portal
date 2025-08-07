@@ -15,15 +15,14 @@ exports.signup = async (req, res) => {
       data: { name, email, password: hashedPassword, role }
     });
     
-    // If signing up as a student, also create a Student record
     if (role === 'student') {
       await prisma.student.create({
         data: {
-          id: user.id, // Use same ID as User
+          id: user.id, 
           name,
           email,
-          branchId: branchId ? parseInt(branchId) : 1, // Default to branch 1 if not provided
-          cgpa: cgpa ? parseFloat(cgpa) : 0.0 // Default CGPA if not provided
+          branchId: branchId ? parseInt(branchId) : 1, 
+          cgpa: cgpa ? parseFloat(cgpa) : 0.0 
         }
       });
     }

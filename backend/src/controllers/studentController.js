@@ -5,7 +5,6 @@ exports.updateProfile = async (req, res) => {
   const { name, cgpa, branchId } = req.body;
   const userId = req.user.id;
   
-  // Extract files from req.files (multer.fields() puts files in req.files object)
   const cvFile = req.files && req.files.cv ? req.files.cv[0] : null;
   const photoFile = req.files && req.files.photo ? req.files.photo[0] : null;
   const aadharFile = req.files && req.files.aadhar ? req.files.aadhar[0] : null;
@@ -23,7 +22,6 @@ exports.updateProfile = async (req, res) => {
     xiiMarksheetFile: xiiMarksheetFile ? xiiMarksheetFile.filename : 'none' 
   });
   
-  // Validate input
   if (!name || cgpa === undefined || !branchId) {
     console.log('Validation failed: missing required fields');
     return res.status(400).json({ error: 'Name, CGPA, and Branch are required' });

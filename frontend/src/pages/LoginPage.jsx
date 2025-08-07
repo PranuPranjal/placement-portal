@@ -35,22 +35,17 @@ const LoginPage = () => {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    window.location.reload();
-  };
+  // const handleLogout = () => {
+  //   localStorage.removeItem('token');
+  //   window.location.reload();
+  // };
 
-  const token = localStorage.getItem('token');
+  // const token = localStorage.getItem('token');
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f7fafc' }}>
       <div className="card" style={{ width: 400 }}>
         <h2 className="text-2xl font-bold mb-8 text-center text-blue-800">Login</h2>
-        {token && (
-          <button onClick={handleLogout} className="btn" style={{ width: '100%', marginBottom: 16 }}>
-            Logout
-          </button>
-        )}
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
