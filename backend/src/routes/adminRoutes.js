@@ -47,6 +47,10 @@ router.get('/companies/:id/applicants', async (req, res) => {
       email: app.student.email,
       branch: app.student.branch.name,
       cgpa: app.student.cgpa,
+      cvPath: app.student.cvPath,
+      ugMarksheetPath: app.student.ugMarksheetPath,
+      xiiMarksheetPath: app.student.xiiMarksheetPath,
+      xMarksheetPath: app.student.xMarksheetPath,
       status: app.status,
       appliedAt: app.createdAt || new Date()
     }));

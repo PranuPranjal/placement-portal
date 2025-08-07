@@ -4,6 +4,7 @@ const CompaniesInfo = () => {
   const [companies, setCompanies] = React.useState([]);
   const [selectedCompany, setSelectedCompany] = React.useState(null);
   const [applicants, setApplicants] = React.useState([]);
+  console.log(applicants);
   const [showApplicants, setShowApplicants] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   React.useEffect(() => {
@@ -125,6 +126,10 @@ const CompaniesInfo = () => {
                       <th className="px-4 py-2 text-left">Email</th>
                       <th className="px-4 py-2 text-left">Branch</th>
                       <th className="px-4 py-2 text-left">CGPA</th>
+                      <th className="px-4 py-2 text-left">CV</th>
+                      <th className="px-4 py-2 text-left">UG Marksheet</th>
+                      <th className="px-4 py-2 text-left">XII Marksheet</th>
+                      <th className="px-4 py-2 text-left">X Marksheet</th>
                       <th className="px-4 py-2 text-left">Status</th>
                     </tr>
                   </thead>
@@ -135,6 +140,62 @@ const CompaniesInfo = () => {
                         <td className="px-4 py-2">{applicant.email}</td>
                         <td className="px-4 py-2">{applicant.branch}</td>
                         <td className="px-4 py-2">{applicant.cgpa}</td>
+                        <td className="px-4 py-2">
+                          {applicant.cvPath ? (
+                            <a 
+                              href={`http://localhost:5000/uploadcv/${applicant.cvPath}`} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-blue-600 hover:text-blue-800 underline"
+                            >
+                              View CV
+                            </a>
+                          ) : (
+                            <span className="text-gray-500">No CV</span>
+                          )}
+                        </td> 
+                        <td className="px-4 py-2">
+                          {applicant.ugMarksheetPath ? (
+                            <a 
+                              href={`http://localhost:5000/uploadugmarks/${applicant.ugMarksheetPath}`} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-blue-600 hover:text-blue-800 underline"
+                            >
+                              View UG Marksheet
+                            </a>
+                          ) : (
+                            <span className="text-gray-500">No UG Marksheet</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-2">
+                          {applicant.xiiMarksheetPath ? (
+                            <a 
+                              href={`http://localhost:5000/uploadxiimarks/${applicant.xiiMarksheetPath}`} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-blue-600 hover:text-blue-800 underline"
+                            >
+                              View XII Marksheet
+                            </a>
+                          ) : (
+                            <span className="text-gray-500">No XII Marksheet</span>
+                          )}
+                        </td>
+                        <td className="px-4 py-2">
+                          {applicant.xMarksheetPath ? (
+                            <a 
+                              href={`http://localhost:5000/uploadxmarks/${applicant.xMarksheetPath}`} 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                              className="text-blue-600 hover:text-blue-800 underline"
+                            >
+                              View X Marksheet
+                            </a>
+                          ) : (
+                            <span className="text-gray-500">No X Marksheet</span>
+                          )}
+                        </td>
                         <td className="px-4 py-2">
                           <span className={`px-2 py-1 rounded text-xs ${
                             applicant.status === 'PENDING' ? 'bg-yellow-100 text-yellow-800' :
