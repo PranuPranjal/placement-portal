@@ -8,7 +8,7 @@ const generateToken = (user) => {
 };
 
 exports.signup = async (req, res) => {
-  const { name, email, password, role, branchId, cgpa } = req.body;
+  const { name, rollNumber, registrationNumber, email, password, role, branchId, cgpa } = req.body;
   const hashedPassword = await bcrypt.hash(password, 10);
   try {
     const user = await prisma.user.create({
@@ -22,7 +22,9 @@ exports.signup = async (req, res) => {
           name,
           email,
           branchId: branchId ? parseInt(branchId) : 1, 
-          cgpa: cgpa ? parseFloat(cgpa) : 0.0 
+          cgpa: cgpa ? parseFloat(cgpa) : 0.0,
+          rollNumber: rollNumber ? parseInt(rollNumber) : 0,
+          registrationNumber: registrationNumber ? parseInt(registrationNumber) : 0
         }
       });
     }
@@ -43,4 +45,22 @@ exports.login = async (req, res) => {
   if (!isMatch) return res.status(401).json({ error: 'Invalid credentials' });
 
   res.json({ token: generateToken(user) });
+};
+
+// Return the currently authenticated user's basic info
+exports.me = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { id: true, name: true, email: true, role: true }
+    });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.json(user);
+  } catch (err) {
+    console.error('Me endpoint error:', err);
+    res.status(500).json({ error: 'Failed to fetch user' });
+  }
 };

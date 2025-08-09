@@ -1,6 +1,8 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const EligibleCompanies = () => {
+  const [profile, setProfile] = React.useState(null);
   const [companies, setCompanies] = React.useState([]);
   const [appliedCompanies, setAppliedCompanies] = React.useState(new Set());
   const [selectedRole, setSelectedRole] = React.useState('');
@@ -9,11 +11,41 @@ const EligibleCompanies = () => {
   const [selectedCompany, setSelectedCompany] = React.useState(null);
   const [cvFile, setCvFile] = React.useState(null);
   const [currentCv, setCurrentCv] = React.useState(null);
+  
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     fetchCompanies();
     fetchAppliedCompanies();
     fetchCurrentCv();
+  }, []);
+
+  const fetchProfile = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const res = await fetch('http://localhost:5000/api/student/profile', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setProfile(data);
+      }
+    } catch (err) {
+      console.error('Failed to fetch profile');
+    }
+  };
+
+  const isProfileComplete = (p) => {
+    if (!p) return false;
+    const requiredFields = ['name', 'cgpa', 'XPercentage', 'XIIPercentage', 'branchId', 'cvPath', 'rollNumber', 'registrationNumber', 'photoPath', 'XIIPercentage', 'XPercentage', 'ugMarksheetPath', 'xMarksheetPath', 'xiiMarksheetPath'];
+    return requiredFields.every(field => p[field] !== null && p[field] !== '');
+  };
+
+  React.useEffect(() => {
+    fetchCompanies();
+    fetchAppliedCompanies();
+    fetchCurrentCv();
+    fetchProfile();
   }, []);
 
   const fetchCompanies = async () => {
@@ -102,10 +134,17 @@ const EligibleCompanies = () => {
   };
 
   const openApplicationModal = (company) => {
+    if (!isProfileComplete(profile)) {
+      alert('Please complete your profile before applying.');
+      navigate('/student/profile'); // redirect to edit profile page
+      return;
+    }
+    
     setSelectedCompany(company);
-    setSelectedRole('');  // Reset role selection
+    setSelectedRole('');
     setShowApplicationModal(true);
   };
+
 
 
   const closeApplicationModal = () => {
@@ -158,7 +197,7 @@ const EligibleCompanies = () => {
             <tr className="bg-blue-50">
               <th className="px-4 py-2 text-left">Name</th>
               <th className="px-4 py-2 text-left">Role</th>
-              <th className="px-4 py-2 text-left">Salary</th>
+              <th className="px-4 py-2 text-left">CTC (in LPA)</th>
               <th className="px-4 py-2 text-left">Deadline</th>
               <th className="px-4 py-2 text-left">Description</th>
               <th className="px-4 py-2 text-left">File</th>

@@ -2,7 +2,7 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
 exports.updateProfile = async (req, res) => {
-  const { name, cgpa, branchId } = req.body;
+  const { name, cgpa, XPercentage, XIIPercentage, branchId } = req.body;
   const userId = req.user.id;
   
   const cvFile = req.files && req.files.cv ? req.files.cv[0] : null;
@@ -13,7 +13,7 @@ exports.updateProfile = async (req, res) => {
   const xiiMarksheetFile = req.files && req.files.xiiMarksheet ? req.files.xiiMarksheet[0] : null;
   
   console.log('UpdateProfile request:', { 
-    name, cgpa, branchId, userId, 
+    name, cgpa, XPercentage, XIIPercentage, branchId, userId, 
     cvFile: cvFile ? cvFile.filename : 'none', 
     photoFile: photoFile ? photoFile.filename : 'none', 
     aadharFile: aadharFile ? aadharFile.filename : 'none', 
@@ -22,9 +22,9 @@ exports.updateProfile = async (req, res) => {
     xiiMarksheetFile: xiiMarksheetFile ? xiiMarksheetFile.filename : 'none' 
   });
   
-  if (!name || cgpa === undefined || !branchId) {
+  if (!name || cgpa === undefined || !branchId || XPercentage === undefined || XIIPercentage === undefined) {
     console.log('Validation failed: missing required fields');
-    return res.status(400).json({ error: 'Name, CGPA, and Branch are required' });
+    return res.status(400).json({ error: 'Name, CGPA, XPercentage, XIIPercentage, and Branch are required' });
   }
   
   if (isNaN(cgpa) || cgpa < 0 || cgpa > 10) {
@@ -53,6 +53,8 @@ exports.updateProfile = async (req, res) => {
     const updateData = {
       name,
       cgpa: parseFloat(cgpa),
+      XPercentage: parseFloat(XPercentage),
+      XIIPercentage: parseFloat(XIIPercentage),
       branchId: parseInt(branchId)
     };
     
@@ -61,6 +63,8 @@ exports.updateProfile = async (req, res) => {
       name,
       email: user.email,
       cgpa: parseFloat(cgpa),
+      XPercentage: parseFloat(XPercentage),
+      XIIPercentage: parseFloat(XIIPercentage),
       branchId: parseInt(branchId)
     };
     

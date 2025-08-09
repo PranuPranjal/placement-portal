@@ -80,6 +80,8 @@ const StudentsProfile = () => {
               <th className="px-4 py-2 text-left">Email</th>
               <th className="px-4 py-2 text-left">Branch</th>
               <th className="px-4 py-2 text-left">CGPA</th>
+              <th className="px-4 py-2 text-left">X Percentage</th>
+              <th className="px-4 py-2 text-left">XII Percentage</th>
               {/* <th className="px-4 py-2 text-left">Photo</th>
               <th className="px-4 py-2 text-left">CV</th>
               <th className="px-4 py-2 text-left">UG Marksheet</th>
@@ -96,6 +98,8 @@ const StudentsProfile = () => {
                 <td className="px-4 py-2">{s.email}</td>
                 <td className="px-4 py-2">{s.branch?.name || ''}</td>
                 <td className="px-4 py-2">{s.cgpa}</td>
+                <td className="px-4 py-2">{s.XPercentage}</td>
+                <td className="px-4 py-2">{s.XIIPercentage}</td>
                 {/* <td className="px-4 py-2">
                   {s.photoPath ? (
                     <a href={`http://localhost:5000/uploadphoto/${s.photoPath}`} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-800 underline">View</a>
@@ -192,6 +196,14 @@ const StudentsProfile = () => {
                   <div>
                     <label className="block text-sm font-medium text-gray-700">CGPA</label>
                     <p className="text-gray-900">{selectedStudent.cgpa}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">X Percentage</label>
+                    <p className="text-gray-900">{selectedStudent.XPercentage}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">XII Percentage</label>
+                    <p className="text-gray-900">{selectedStudent.XIIPercentage}</p>
                   </div>
                 </div>
               </div>

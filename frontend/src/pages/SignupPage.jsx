@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 const SignupPage = () => {
   const [role, setRole] = useState('student');
   const [name, setName] = useState('');
+  const [rollNumber, setRollNumber] = useState('');
+  const [registrationNumber, setRegistrationNumber] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [branchId, setBranchId] = useState('');
@@ -39,10 +41,10 @@ const SignupPage = () => {
     try {
       const body = {
         name,
-        email,
+        email: role === 'student' ? `${rollNumber}@student.nitandhra.ac.in` : `${email}@student.nitandhra.ac.in`,
         password,
         role,
-        ...(role === 'student' ? { branchId, cgpa } : {})
+        ...(role === 'student' ? { branchId, cgpa, rollNumber, registrationNumber } : {})
       };
       const res = await fetch('/api/auth/signup', {
         method: 'POST',
@@ -78,14 +80,6 @@ const SignupPage = () => {
             <label>Name:</label>
             <input value={name} onChange={e => setName(e.target.value)} required placeholder="Full Name" />
           </div>
-          <div style={{ marginBottom: 16 }}>
-            <label>Email:</label>
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)} required placeholder="Email" />
-          </div>
-          <div style={{ marginBottom: 16 }}>
-            <label>Password:</label>
-            <input type="password" value={password} onChange={e => setPassword(e.target.value)} required placeholder="Password" />
-          </div>
           {role === 'student' && (
             <>
               <div style={{ marginBottom: 16 }}>
@@ -97,6 +91,40 @@ const SignupPage = () => {
                   ))}
                 </select>
               </div>
+              <div style={{ marginBottom: 16 }}>
+                <label>Registration Number:</label>
+                <input value={registrationNumber} onChange={e => setRegistrationNumber(e.target.value)} required placeholder="Registration Number" />
+              </div>
+              <div style={{ marginBottom: 16 }}>
+                <label>Roll Number:</label>
+                <input value={rollNumber} onChange={e => setRollNumber(e.target.value)} required placeholder="Roll Number" />
+              </div>
+              <div style={{ marginBottom: 16 }}>
+                <label>Email:</label>
+                <div className='flex items-center'>
+                <input value={rollNumber} onChange={e => setEmail(e.target.value)} required placeholder="Email" />
+                <span style={{ fontSize: 18, color: '#6b7280' }}>@student.nitandhra.ac.in</span>
+                </div>
+              </div>
+            </>
+          )}
+          {role !== 'student' && (
+            <>
+              <div style={{ marginBottom: 16 }}>
+                <label>Email:</label>
+                <div className='flex items-center'>
+                <input value={email} onChange={e => setEmail(e.target.value)} required placeholder="Email" />
+                <span style={{ fontSize: 18, color: '#6b7280' }}>@student.nitandhra.ac.in</span>
+                </div>
+              </div>
+            </>
+          )}
+          <div style={{ marginBottom: 16 }}>
+            <label>Password:</label>
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} required placeholder="Password" />
+          </div>
+          {role === 'student' && (
+            <>
               <div style={{ marginBottom: 16 }}>
                 <label>CGPA:</label>
                 <input type="number" step="0.01" value={cgpa} onChange={e => setCgpa(e.target.value)} required placeholder="CGPA" min="0" max="10" />

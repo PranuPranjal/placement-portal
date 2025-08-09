@@ -4,6 +4,7 @@ import AddCompany from '../admin/AddCompany';
 import CompaniesInfo from '../admin/CompaniesInfo';
 import StudentsProfile from '../admin/StudentsProfile';
 import AdminOverview from '../admin/AdminOverview';
+import Header from '../components/Header';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -21,6 +22,8 @@ const AdminDashboard = () => {
     return location.pathname === path;
   };
   return (
+    <>
+    <Header />
     <div className="min-h-screen bg-gray-50 w-full overflow-x-hidden">
       <aside className="fixed left-0 top-0 w-64 h-screen overflow-y-auto bg-white shadow-lg z-30 flex flex-col py-8 px-4">
         <h2 className="text-xl font-bold text-blue-700 mb-8">Admin Dashboard</h2>
@@ -93,6 +96,7 @@ const AdminDashboard = () => {
         </Routes>
       </main>
     </div>
+    </>
   );
 };
 

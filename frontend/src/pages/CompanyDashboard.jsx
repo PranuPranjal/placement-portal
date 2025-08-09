@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, useNavigate } from 'react-router-dom';
 import CompanyApplicants from '../company/CompanyApplicants';
+import Header from '../components/Header';
 
 const CompanyDashboard = () => {
   const [companyProfile, setCompanyProfile] = useState(null);
@@ -61,6 +62,8 @@ const CompanyDashboard = () => {
   };
 
   return (
+    <>
+    <Header />
     <div className="min-h-screen bg-gray-50 w-full overflow-x-hidden pl-[280px]">
       {/* Sidebar */}
       {/* <div className="w-64 bg-white shadow-md">
@@ -127,6 +130,7 @@ const CompanyDashboard = () => {
         </Routes>
       </div>
     </div>
+    </>
   );
 };
 

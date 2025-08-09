@@ -3,6 +3,7 @@ import { Routes, Route, Link, Navigate, useNavigate } from 'react-router-dom';
 import EligibleCompanies from '../student/EligibleCompanies';
 import AppliedCompanies from '../student/AppliedCompanies';
 import Profile from '../student/Profile';
+import Header from '../components/Header';
 
 const StudentDashboard = () => {
   const navigate = useNavigate();
@@ -25,9 +26,11 @@ const StudentDashboard = () => {
     return location.pathname === path;
   };
   return (
+    <>
+    <Header />
     <div className="min-h-screen bg-gray-50 w-full overflow-x-hidden pl-[280px]">
       <aside className="fixed left-0 top-0 w-64 h-screen overflow-y-auto bg-white shadow-lg z-30 flex flex-col py-8 px-4">
-        <h2 className="text-xl font-bold text-blue-700 mb-8">Student Dashboard</h2>
+        <h2 className="text-xl font-bold text-blue-700 mb-8">Student</h2>
         <nav className="flex-1">
           <ul className="space-y-4">
             <li><Link to="/student/eligible-companies" className="block px-3 py-2 rounded-lg hover:bg-blue-100 text-gray-700 font-medium"
@@ -63,6 +66,7 @@ const StudentDashboard = () => {
         </Routes>
       </main>
     </div>
+    </>
   );
 };
 

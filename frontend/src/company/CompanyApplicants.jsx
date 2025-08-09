@@ -280,6 +280,14 @@ const CompanyApplicants = () => {
                     <label className="block text-sm font-medium text-gray-700">CGPA</label>
                     <p className="text-gray-900">{selectedStudent.cgpa}</p>
                   </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">X Percentage</label>
+                    <p className="text-gray-900">{selectedStudent.XPercentage}</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">XII Percentage</label>
+                    <p className="text-gray-900">{selectedStudent.XIIPercentage}</p>
+                  </div>
                 </div>
               </div>
               
