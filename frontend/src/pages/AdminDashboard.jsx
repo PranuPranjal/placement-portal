@@ -3,6 +3,7 @@ import { Routes, Route, Link, Navigate, useNavigate } from 'react-router-dom';
 import AddCompany from '../admin/AddCompany';
 import CompaniesInfo from '../admin/CompaniesInfo';
 import StudentsProfile from '../admin/StudentsProfile';
+import AdminOverview from '../admin/AdminOverview';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
@@ -17,6 +18,7 @@ const AdminDashboard = () => {
         <h2 className="text-xl font-bold text-blue-700 mb-8">Admin Dashboard</h2>
         <nav className="flex-1">
           <ul className="space-y-4">
+            <li><Link to="/admin" className="block px-3 py-2 rounded-lg hover:bg-blue-100 text-gray-700 font-medium">Overview</Link></li>
             <li><Link to="/admin/add-company" className="block px-3 py-2 rounded-lg hover:bg-blue-100 text-gray-700 font-medium">Add Company</Link></li>
             <li><Link to="/admin/companies-info" className="block px-3 py-2 rounded-lg hover:bg-blue-100 text-gray-700 font-medium">Companies Info</Link></li>
             <li><Link to="/admin/students-profile" className="block px-3 py-2 rounded-lg hover:bg-blue-100 text-gray-700 font-medium">Students Profile</Link></li>
@@ -31,10 +33,11 @@ const AdminDashboard = () => {
       </aside>
       <main className="flex-1 p-8">
         <Routes>
+          <Route index element={<AdminOverview />} />
           <Route path="/add-company" element={<AddCompany />} />
           <Route path="/companies-info" element={<CompaniesInfo />} />
           <Route path="/students-profile" element={<StudentsProfile />} />
-          <Route path="/" element={<Navigate to="/add-company" />} />
+          <Route path="/" element={<Navigate to="/admin" replace />} />
         </Routes>
       </main>
     </div>

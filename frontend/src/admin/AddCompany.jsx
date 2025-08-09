@@ -76,71 +76,167 @@ const AddCompany = () => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow p-6 max-w-md mx-auto">
-      <h3 className="text-lg font-semibold text-blue-700 mb-4">Add New Company</h3>
-      <div style={{ marginBottom: 16 }}>
-        <label>Allowed Branches:</label>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
-          {branches.map(branch => (
-            <label key={branch.id} style={{ minWidth: 110, marginRight: 12 }}>
-              <input
-                type="checkbox"
-                value={branch.id}
-                checked={selectedBranches.includes(String(branch.id))}
-                onChange={e => {
-                  if (e.target.checked) {
-                    setSelectedBranches([...selectedBranches, String(branch.id)]);
-                  } else {
-                    setSelectedBranches(selectedBranches.filter(id => id !== String(branch.id)));
-                  }
-                }}
-              />{' '}
-              {branch.name}
-            </label>
-          ))}
+    <div className="bg-white rounded-xl shadow p-6 max-w-3xl mx-auto">
+      <h3 className="text-lg font-semibold text-blue-700 mb-6">Add New Company</h3>
+
+      {/* Allowed Branches */}
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-gray-700 mb-2">Allowed Branches</label>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          {branches.map(branch => {
+            const idStr = String(branch.id);
+            const checked = selectedBranches.includes(idStr);
+            return (
+              <label key={branch.id} className="flex items-center gap-2 text-sm text-gray-700 bg-white/70 rounded-md px-3 py-2 border border-gray-200">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  value={idStr}
+                  checked={checked}
+                  onChange={e => {
+                    if (e.target.checked) {
+                      setSelectedBranches([...selectedBranches, idStr]);
+                    } else {
+                      setSelectedBranches(selectedBranches.filter(id => id !== idStr));
+                    }
+                  }}
+                />
+                <span>{branch.name}</span>
+              </label>
+            );
+          })}
         </div>
       </div>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <input placeholder="Company Name" value={name} onChange={e => setName(e.target.value)} required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
-        <input placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Roles</label>
-          {role.map((r, index) => (
-            <input
-              key={index}
-              placeholder={`Role ${index + 1}`}
-              value={r}
-              onChange={e => {
-                const newRole = [...role];
-                newRole[index] = e.target.value;
-                setRole(newRole);
-              }}
-              required
-              className="w-full mb-2 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+            <input 
+              placeholder="Ex: Acme Corp"
+              value={name}
+              onChange={e => setName(e.target.value)}
+              required 
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" 
             />
-          ))}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <input 
+              type="password"
+              placeholder="Set company login password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              required 
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" 
+            />
+          </div>
+        </div>
+
+        {/* Roles */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">Roles</label>
+          <div className="space-y-2">
+            {role.map((r, index) => (
+              <div key={index} className="flex gap-2">
+                <input
+                  placeholder={`Role ${index + 1}`}
+                  value={r}
+                  onChange={e => {
+                    const newRole = [...role];
+                    newRole[index] = e.target.value;
+                    setRole(newRole);
+                  }}
+                  required
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                />
+                {role.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => setRole(role.filter((_, i) => i !== index))}
+                    className="px-3 py-2 text-sm bg-red-50 text-red-600 rounded-lg border border-red-200 hover:bg-red-100"
+                    aria-label="Remove role"
+                  >
+                    ×
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
           <button
             type="button"
             onClick={() => setRole([...role, ''])}
-            className="text-blue-600 hover:text-blue-800 text-sm underline"
+            className="mt-2 text-sm px-3 py-1.5 rounded-lg border border-blue-200 text-blue-700 hover:bg-blue-50"
           >
             + Add Role
           </button>
         </div>
-        <input placeholder='CGPA Criteria' value={cgpaCriteria} onChange={e => setCgpaCriteria(e.target.value)} required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
-        <input placeholder="Salary" value={ctc} onChange={e => setCtc(e.target.value)} required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
-        <input placeholder="Deadline" type='datetime-local' value={deadline} onChange={e => setDeadline(e.target.value)} required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
-        <input placeholder="Description" value={description} onChange={e => setDescription(e.target.value)} required className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">CGPA Criteria</label>
+            <input 
+              type="number" step="0.01" min="0" max="10"
+              placeholder="e.g., 7.50"
+              value={cgpaCriteria}
+              onChange={e => setCgpaCriteria(e.target.value)}
+              required 
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" 
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Salary (CTC)</label>
+            <input 
+              type="number" step="0.01" min="0"
+              placeholder="e.g., 6 LPA"
+              value={ctc}
+              onChange={e => setCtc(e.target.value)}
+              required 
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" 
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Deadline</label>
+            <input 
+              type='datetime-local' 
+              value={deadline}
+              onChange={e => setDeadline(e.target.value)}
+              required 
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" 
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Company File (Optional)</label>
+            <input 
+              type="file" 
+              onChange={e => setFile(e.target.files[0])} 
+              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" 
+            />
+          </div>
+        </div>
+
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Company File (Optional)</label>
-          <input 
-            type="file" 
-            onChange={e => setFile(e.target.files[0])} 
-            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif"
+          <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+          <textarea 
+            rows={4}
+            placeholder="Brief job description, responsibilities, requirements..."
+            value={description}
+            onChange={e => setDescription(e.target.value)}
+            required 
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" 
           />
         </div>
-        <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg shadow-md transition-colors">Add Company</button>
+
+        <button 
+          type="submit" 
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg shadow-md transition-colors"
+        >
+          Add Company
+        </button>
       </form>
     </div>
   );

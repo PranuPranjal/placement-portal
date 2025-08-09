@@ -21,6 +21,11 @@ const AppliedCompanies = () => {
           <thead>
             <tr className="bg-blue-50">
               <th className="px-4 py-2 text-left">Name</th>
+              <th className="px-4 py-2 text-left">Role</th>
+              <th className="px-4 py-2 text-left">Salary</th>
+              <th className="px-4 py-2 text-left">Deadline</th>
+              <th className="px-4 py-2 text-left">Description</th>
+              <th className="px-4 py-2 text-left">Company File</th>
               <th className="px-4 py-2 text-left">Status</th>
             </tr>
           </thead>
@@ -28,6 +33,32 @@ const AppliedCompanies = () => {
             {applied.map((c, i) => (
               <tr key={i} className="border-b hover:bg-blue-50">
                 <td className="px-4 py-2 font-medium">{c.name}</td>
+                <td className="px-4 py-2">{c.role}</td>
+                <td className="px-4 py-2">{c.salary || c.ctc}</td>
+                <td className="px-4 py-2">
+                  {new Date(c.deadline).toLocaleString('en-IN', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                </td>
+                <td className="px-4 py-2">{c.description}</td>
+                <td className="px-4 py-2">
+                  {c.filePath ? (
+                    <a 
+                      href={`http://localhost:5000/uploads/${c.filePath}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:text-blue-800 underline"
+                    >
+                      View
+                    </a>
+                  ) : (
+                    <span className="text-gray-500">No file</span>
+                  )}
+                </td>
                 <td className="px-4 py-2">{c.status}</td>
               </tr>
             ))}

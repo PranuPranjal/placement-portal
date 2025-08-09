@@ -19,6 +19,13 @@ const CompaniesInfo = () => {
     fetchCompanies();
   }, []);
 
+  // Auto-scroll to top when applicants panel opens
+  React.useEffect(() => {
+    if (showApplicants) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [showApplicants]);
+
   const fetchApplicants = async (companyId, companyName) => {
     setLoading(true);
     setSelectedCompany(companyName);
@@ -109,8 +116,8 @@ const CompaniesInfo = () => {
       
       {/* Applicants Modal */}
       {showApplicants && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 max-w-4xl w-full mx-4 max-h-96 overflow-y-auto">
+        <div className="modal-overlay modal-overlay-top">
+          <div className="modal-content modal-content--wide modal-content--no-scroll">
             <div className="flex justify-between items-center mb-4">
               <h4 className="text-lg font-semibold text-blue-700">
                 Applicants for {selectedCompany}
@@ -126,7 +133,7 @@ const CompaniesInfo = () => {
             {applicants.length === 0 ? (
               <p className="text-gray-500 text-center py-4">No applicants yet</p>
             ) : (
-              <div className="overflow-x-auto">
+              <div>
                 <table className="min-w-full text-sm text-gray-700">
                   <thead>
                     <tr className="bg-gray-50">

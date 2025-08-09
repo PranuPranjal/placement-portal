@@ -64,4 +64,59 @@ router.get('/companies/:id/applicants', async (req, res) => {
 
 router.get('/users', viewUsers);
 
+// Aggregated statistics for admin dashboard
+router.get('/stats', async (req, res) => {
+  try {
+    const [totalStudents, companies, applicationsGroup, branchGroup] = await Promise.all([
+      prisma.student.count(),
+      prisma.company.findMany({ select: { id: true, name: true, role: true } }),
+      prisma.application.groupBy({
+        by: ['companyId'],
+        _count: { companyId: true },
+      }),
+      prisma.companyAllowedBranch.groupBy({
+        by: ['branchId'],
+        _count: { branchId: true },
+      })
+    ]);
+
+    const totalCompanies = companies.length;
+    const countsMap = Object.fromEntries(
+      applicationsGroup.map(g => [g.companyId, g._count.companyId])
+    );
+
+    const applicationsByCompany = companies.map(c => ({
+      companyId: c.id,
+      name: c.name,
+      count: countsMap[c.id] || 0,
+    }));
+
+    // Role distribution
+    const roleCounts = new Map();
+    for (const c of companies) {
+      const raw = c.role || '';
+      raw.split(',').map(r => r.trim()).filter(Boolean).forEach(r => {
+        roleCounts.set(r, (roleCounts.get(r) || 0) + 1);
+      });
+    }
+    const roleDistribution = Array.from(roleCounts.entries()).map(([name, count]) => ({ name, count }));
+
+    // Branch distribution (how many companies allow each branch)
+    const branchIds = branchGroup.map(b => b.branchId);
+    const branches = branchIds.length
+      ? await prisma.branch.findMany({ where: { id: { in: branchIds } }, select: { id: true, name: true } })
+      : [];
+    const branchNameById = Object.fromEntries(branches.map(b => [b.id, b.name]));
+    const branchDistribution = branchGroup.map(b => ({
+      name: branchNameById[b.branchId] || String(b.branchId),
+      count: b._count.branchId,
+    }));
+
+    res.json({ totalStudents, totalCompanies, applicationsByCompany, roleDistribution, branchDistribution });
+  } catch (err) {
+    console.error('Error building admin stats:', err);
+    res.status(500).json({ error: 'Failed to fetch stats' });
+  }
+});
+
 module.exports = router;

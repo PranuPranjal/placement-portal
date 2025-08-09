@@ -130,17 +130,32 @@ router.get('/profile', async (req, res) => {
   }
 });
 
-// Get applied companies
+// Get applied companies with company details
 router.get('/applied', async (req, res) => {
   try {
     const userId = req.user.id;
-    const prisma = req.app.get('prisma') || require('@prisma/client').PrismaClient ? new (require('@prisma/client').PrismaClient)() : null;
+    const prisma = req.app.get('prisma') || (require('@prisma/client').PrismaClient ? new (require('@prisma/client').PrismaClient)() : null);
     if (!prisma) throw new Error('Prisma client not found');
+
     const applications = await prisma.application.findMany({
       where: { studentId: userId },
-      include: { company: true }
+      include: {
+        company: true,
+      },
+      orderBy: { id: 'desc' },
     });
-    const applied = applications.map(a => ({ name: a.company.name, status: a.status }));
+
+    const applied = applications.map(a => ({
+      id: a.company.id,
+      name: a.company.name,
+      role: a.company.role,
+      salary: a.company.salary,
+      deadline: a.company.deadline,
+      description: a.company.description,
+      filePath: a.company.filePath,
+      status: a.status,
+    }));
+
     res.json(applied);
   } catch (err) {
     console.error('Error fetching applied companies:', err);

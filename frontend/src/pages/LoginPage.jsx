@@ -21,7 +21,7 @@ const LoginPage = () => {
         // Decode JWT to get role
         const payload = JSON.parse(atob(data.token.split('.')[1]));
         if (payload.role === 'admin') {
-          navigate('/admin/add-company');
+          navigate('/admin');
         } else if (payload.role === 'company') {
           navigate('/company/applicants');
         } else {

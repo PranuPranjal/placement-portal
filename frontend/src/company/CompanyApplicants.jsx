@@ -12,6 +12,13 @@ const CompanyApplicants = () => {
     fetchApplicants();
   }, []);
 
+  // Auto-scroll to top when profile modal opens
+  useEffect(() => {
+    if (showModal) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [showModal]);
+
   const fetchApplicants = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -221,8 +228,8 @@ const CompanyApplicants = () => {
 
       {/* Student Profile Modal */}
       {showModal && selectedStudent && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-20 mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-md bg-white">
+        <div className="modal-overlay modal-overlay-top">
+          <div className="modal-content modal-content--wide modal-content--no-scroll">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-lg font-bold text-gray-900">Student Profile</h3>
               <button
