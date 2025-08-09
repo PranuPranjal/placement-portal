@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 /* Modern CSS Reset and Base Styles */
 * { 
   box-sizing: border-box; 
@@ -77,7 +79,7 @@ body {
 }
 
 .sidebar, .w-64.bg-white.shadow-lg.flex.flex-col.py-8.px-4 {
-  width: 280px; 
+  width: 16rem; /* match Tailwind w-64 = 256px */ 
   background: rgba(255, 255, 255, 0.95); 
   backdrop-filter: blur(20px);
   box-shadow: var(--shadow-xl); 
@@ -196,8 +198,8 @@ body {
 .px-4 { padding-left: 1rem; padding-right: 1rem; }
 .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
 
-/* Buttons */
-button, .btn {
+/* Buttons - Only apply to .btn class, not global button */
+.btn {
   background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
   color: white; 
   border: none; 
@@ -211,7 +213,7 @@ button, .btn {
   overflow: hidden;
 }
 
-button::before, .btn::before {
+.btn::before {
   content: '';
   position: absolute;
   top: 0;
@@ -222,18 +224,18 @@ button::before, .btn::before {
   transition: left 0.5s;
 }
 
-button:hover::before, .btn:hover::before {
+.btn:hover::before {
   left: 100%;
 }
 
-button:hover, .btn:hover { 
+.btn:hover { 
   background: linear-gradient(135deg, var(--primary-600), var(--primary-700));
   transform: translateY(-1px);
   box-shadow: var(--shadow-lg);
 }
 
 /* Form Elements */
-input, select, textarea {
+input:not([type="checkbox"]):not([type="radio"]), select, textarea {
   width: 100%; 
   padding: 0.875rem 1rem; 
   border: 2px solid var(--secondary-200); 
@@ -244,6 +246,15 @@ input, select, textarea {
   transition: all 0.2s ease;
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(10px);
+}
+
+/* Do not force layout styles on checkboxes/radios */
+input[type="checkbox"],
+input[type="radio"] {
+  width: auto;
+  height: auto;
+  margin-bottom: 0;
+  padding: 0;
 }
 
 input:focus, select:focus, textarea:focus { 

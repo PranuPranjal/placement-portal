@@ -125,7 +125,7 @@ const Profile = () => {
   if (!student) return <div className="text-center text-gray-500">Loading...</div>;
   
   return (
-    <div className="bg-white rounded-xl shadow p-6 max-w-2xl mx-auto">
+    <div className="bg-white rounded-xl shadow p-6 max-w-2xl mx-auto" style={{ marginLeft: '16rem'}}>
       <div className="flex justify-between items-center mb-6">
         <h3 className="text-lg font-semibold text-blue-700">Profile</h3>
         {!isEditing && (

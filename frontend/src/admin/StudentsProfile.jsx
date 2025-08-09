@@ -55,7 +55,7 @@ const StudentsProfile = () => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow p-6">
+    <div className="bg-white rounded-xl shadow p-6" style={{ marginLeft: '16rem'}}>
       <h3 className="text-lg font-semibold text-blue-700 mb-4">Students Profile</h3>
       <div className="mb-4">
         <label className="mr-2 font-medium text-gray-700">Filter by Branch:</label>

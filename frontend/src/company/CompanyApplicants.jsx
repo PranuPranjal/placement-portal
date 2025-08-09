@@ -91,8 +91,9 @@ const CompanyApplicants = () => {
   }
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Student Applicants</h1>
+    <div style={{ marginLeft: '16rem'}}>
+      <h1 className="text-3xl font-bold text-gray-800 mb-6">Applicants</h1>
+      <br />
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700 mb-1">Filter by Branch:</label>
         <select

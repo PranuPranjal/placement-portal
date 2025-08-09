@@ -183,7 +183,7 @@ const AdminOverview = () => {
   if (error) return <div className="text-red-600">{error}</div>;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" style={{ marginLeft: '16rem'}}>
       <div className="stats-grid">
         <StatCard label="Total Students" value={stats.totalStudents} />
         <StatCard label="Total Companies" value={stats.totalCompanies} />
@@ -219,7 +219,9 @@ const AdminOverview = () => {
         {stats.applicationsByCompany.length === 0 ? (
           <div className="text-gray-500 text-center py-8">No applications yet</div>
         ) : (
-          <BarChart data={stats.applicationsByCompany} />
+          <div className="overflow-x-auto max-h-96 overflow-y-auto">
+            <BarChart data={stats.applicationsByCompany} />
+          </div>
         )}
       </div>
     </div>

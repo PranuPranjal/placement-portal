@@ -76,21 +76,36 @@ const AddCompany = () => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow p-6 max-w-3xl mx-auto">
+    <div className="bg-white rounded-xl shadow p-6 max-w-3xl mx-auto" style={{ marginLeft: '30rem'}}>
       <h3 className="text-lg font-semibold text-blue-700 mb-6">Add New Company</h3>
 
       {/* Allowed Branches */}
       <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2">Allowed Branches</label>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Allowed Branches
+        </label>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
           {branches.map(branch => {
             const idStr = String(branch.id);
             const checked = selectedBranches.includes(idStr);
             return (
-              <label key={branch.id} className="flex items-center gap-2 text-sm text-gray-700 bg-white/70 rounded-md px-3 py-2 border border-gray-200">
+              <label
+                key={branch.id}
+                className={`flex items-center cursor-pointer rounded-lg px-3 py-2 border-2 transition-all duration-200 hover:shadow-sm ${
+                  checked
+                    ? 'bg-blue-50 border-blue-200 text-blue-800'
+                    : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'
+                }`}
+                style={{ fontSize: '1.05rem' }}
+              >
                 <input
                   type="checkbox"
-                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  style={{
+                    width: '20px',
+                    height: '20px',
+                    marginRight: '8px'
+                  }}
                   value={idStr}
                   checked={checked}
                   onChange={e => {
@@ -101,19 +116,19 @@ const AddCompany = () => {
                     }
                   }}
                 />
-                <span>{branch.name}</span>
+                <span className="font-medium">{branch.name}</span>
               </label>
             );
           })}
         </div>
       </div>
-
+      <br />
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
             <input 
-              placeholder="Ex: Acme Corp"
+              placeholder="Name of the company"
               value={name}
               onChange={e => setName(e.target.value)}
               required 
@@ -138,7 +153,7 @@ const AddCompany = () => {
           <label className="block text-sm font-medium text-gray-700 mb-2">Roles</label>
           <div className="space-y-2">
             {role.map((r, index) => (
-              <div key={index} className="flex gap-2">
+              <div key={index} style={{ display: 'flex', alignItems: 'stretch', gap: '8px' }}>
                 <input
                   placeholder={`Role ${index + 1}`}
                   value={r}
@@ -148,13 +163,29 @@ const AddCompany = () => {
                     setRole(newRole);
                   }}
                   required
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  style={{ 
+                    width: '300px', 
+                    height: '40px',
+                    padding: '0 16px',
+                    fontSize: '14px'
+                  }}
                 />
                 {role.length > 1 && (
                   <button
                     type="button"
                     onClick={() => setRole(role.filter((_, i) => i !== index))}
-                    className="px-3 py-2 text-sm bg-red-50 text-red-600 rounded-lg border border-red-200 hover:bg-red-100"
+                    className="text-red-600 hover:text-red-800 hover:bg-red-100 rounded border border-red-300"
+                    style={{ 
+                      width: '40px', 
+                      height: '40px', 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center',
+                      flexShrink: '0',
+                      padding: '0',
+                      margin: '0'
+                    }}
                     aria-label="Remove role"
                   >
                     ×
@@ -166,18 +197,18 @@ const AddCompany = () => {
           <button
             type="button"
             onClick={() => setRole([...role, ''])}
-            className="mt-2 text-sm px-3 py-1.5 rounded-lg border border-blue-200 text-blue-700 hover:bg-blue-50"
+            className="inline-flex items-center bg-blue-600 hover:bg-blue-700 hover:cursor-pointer text-white font-semibold px-4 py-2.5 rounded-lg shadow-md transition-colors w-fit"
           >
-            + Add Role
+            Add Role
           </button>
         </div>
-
+        <br />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">CGPA Criteria</label>
             <input 
               type="number" step="0.01" min="0" max="10"
-              placeholder="e.g., 7.50"
+              placeholder="Minimum CGPA Required"
               value={cgpaCriteria}
               onChange={e => setCgpaCriteria(e.target.value)}
               required 
@@ -185,10 +216,10 @@ const AddCompany = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Salary (CTC)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">CTC</label>
             <input 
               type="number" step="0.01" min="0"
-              placeholder="e.g., 6 LPA"
+              placeholder="CTC in LPA"
               value={ctc}
               onChange={e => setCtc(e.target.value)}
               required 
@@ -233,7 +264,7 @@ const AddCompany = () => {
 
         <button 
           type="submit" 
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 rounded-lg shadow-md transition-colors"
+          className="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2.5 rounded-lg shadow-md transition-colors w-fit"
         >
           Add Company
         </button>
