@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Routes, Route, Link, useNavigate } from 'react-router-dom';
 import CompanyApplicants from '../company/CompanyApplicants';
 import Header from '../components/Header';
+import Sidebar from '../components/SideBar';
 
 const CompanyDashboard = () => {
   const [companyProfile, setCompanyProfile] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -64,7 +66,6 @@ const CompanyDashboard = () => {
   return (
     <>
     <Header />
-    <div className="min-h-screen bg-gray-50 w-full overflow-x-hidden pl-[280px]">
       {/* Sidebar */}
       {/* <div className="w-64 bg-white shadow-md">
         <div className="p-6 border-b">
@@ -99,30 +100,18 @@ const CompanyDashboard = () => {
           </button>
         </div>
       </div> */}
-      <aside className="fixed left-0 top-0 w-64 h-screen overflow-y-auto bg-white shadow-lg z-30 flex flex-col py-8 px-4">
-        <h2 className="text-xl font-bold text-blue-700 mb-8">Welcome, {companyProfile.company.name}!</h2>
-        <nav className="flex-1">
-          <ul className="space-y-4">
-            <li><Link to="/company/applicants" className="block px-3 py-2 rounded-lg hover:bg-blue-100 text-gray-700 font-medium" 
-                  style={isActive('/company/applicants') 
-                  ? { backgroundColor: '#2563eb', color: 'white', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }
-                  : { color: '#374151' }}>View Applicants</Link></li>
-            <li><Link to="/company/profile" className="block px-3 py-2 rounded-lg hover:bg-blue-100 text-gray-700 font-medium"
-                  style={isActive('/company/profile') 
-                  ? { backgroundColor: '#2563eb', color: 'white', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }
-                  : { color: '#374151' }}>View Profile</Link></li>
-          </ul>
-        </nav>
-        <button 
-          onClick={handleLogout}
-          className="w-full mt-4 px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium"
-        >
-          Logout
-        </button>
-      </aside>
-
+      <div
+        className="flex"
+        style={{ paddingLeft: isCollapsed ? '5rem' : '16rem' }}
+      >
+        <Sidebar
+          isCollapsed={isCollapsed}
+          setIsCollapsed={setIsCollapsed}
+          handleLogout={handleLogout}
+          role="company"
+        />
       {/* Main Content */}
-      <div className="min-w-0 p-8 overflow-x-auto min-h-screen">
+      <div className="flex-1 p-8 min-h-screen">
         <Routes>
           <Route path="/" element={<CompanyHome companyProfile={companyProfile} />} />
           <Route path="/applicants" element={<CompanyApplicants />} />

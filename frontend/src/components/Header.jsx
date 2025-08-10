@@ -25,7 +25,7 @@ const Header = () => {
 
   return (
     <>
-    <header className="bg-blue-800 text-white max-h-25 h-22 shadow-md px-6 py-3 flex items-center justify-between sticky top-0 z-50">
+    <header className="bg-red-800 text-white max-h-25 h-22 shadow-md px-6 py-3 flex items-center justify-between sticky top-0 z-50">
       {/* Left Logo */}
       <img
         style={{ marginLeft: 12 }}
@@ -49,7 +49,7 @@ const Header = () => {
         />
       </div>
     </header>
-    <div className="h-12 bg-blue-600 flex items-center justify-end pr-24 md:pr-32">
+    <div className="h-12 bg-red-600 flex sticky top-22 items-center justify-end pr-24 md:pr-32">
       {userName ? (
         <span
           className="text-sm md:text-base text-white font-semibold whitespace-nowrap mr-8 md:mr-12 flex items-center gap-2"

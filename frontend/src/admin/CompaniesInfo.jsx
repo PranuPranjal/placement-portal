@@ -54,7 +54,7 @@ const CompaniesInfo = () => {
     setSelectedCompany(null);
   };
   return (
-    <div className="bg-white rounded-xl shadow p-6" style={{ marginLeft: '16rem'}}>
+    <div className="bg-white rounded-xl shadow p-6">
       <h3 className="text-lg font-semibold text-blue-700 mb-4">Companies Info</h3>
       <div className="overflow-x-auto">
         <table className="min-w-full text-sm text-gray-700">

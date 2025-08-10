@@ -1,23 +1,26 @@
 import React, { useState, useEffect } from 'react';
+import { FaUserCircle, FaFilePdf, FaIdCard, FaFileAlt, FaTimes } from 'react-icons/fa';
 
 const CompanyApplicants = () => {
   const [applicants, setApplicants] = useState([]);
-  const [selectedBranch, setSelectedBranch] = useState('All');
+  const [filteredApplicants, setFilteredApplicants] = useState([]);
   const [branches, setBranches] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState('All');
   const [loading, setLoading] = useState(true);
   const [selectedStudent, setSelectedStudent] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
 
   useEffect(() => {
     fetchApplicants();
   }, []);
 
-  // Auto-scroll to top when profile modal opens
   useEffect(() => {
-    if (showModal) {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+    let result = applicants;
+    if (selectedBranch !== 'All') {
+      result = result.filter(app => app.student.branch === selectedBranch);
     }
-  }, [showModal]);
+    setFilteredApplicants(result);
+  }, [selectedBranch, applicants]);
 
   const fetchApplicants = async () => {
     try {
@@ -31,7 +34,7 @@ const CompanyApplicants = () => {
       if (response.ok) {
         const data = await response.json();
         setApplicants(data);
-
+        setFilteredApplicants(data);
         const uniqueBranches = Array.from(
           new Set(data.map(app => app.student.branch))
         );
@@ -46,7 +49,6 @@ const CompanyApplicants = () => {
     }
   };
 
-
   const updateApplicationStatus = async (applicationId, status) => {
     try {
       const token = localStorage.getItem('token');
@@ -60,7 +62,6 @@ const CompanyApplicants = () => {
       });
 
       if (response.ok) {
-        // Update local state
         setApplicants(prev => prev.map(app => 
           app.applicationId === applicationId 
             ? { ...app, status } 
@@ -77,12 +78,13 @@ const CompanyApplicants = () => {
   };
 
   const viewStudentProfile = (student) => {
+    window.scrollTo(0, 0);
     setSelectedStudent(student);
-    setShowModal(true);
+    setShowProfile(true);
   };
 
-  const closeModal = () => {
-    setShowModal(false);
+  const closeProfile = () => {
+    setShowProfile(false);
     setSelectedStudent(null);
   };
 
@@ -91,9 +93,11 @@ const CompanyApplicants = () => {
   }
 
   return (
-    <div style={{ marginLeft: '16rem'}}>
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Applicants</h1>
-      <br />
+    <div className="bg-white rounded-xl shadow p-6 relative">
+      {showProfile && selectedStudent && (
+        <ProfileOverlay student={selectedStudent} onClose={closeProfile} />
+      )}
+      <h1 className="text-lg font-semibold text-blue-700 mb-4">Applicants</h1>
       <div className="mb-4">
         <label className="block text-sm font-medium text-gray-700 mb-1">Filter by Branch:</label>
         <select
@@ -107,84 +111,42 @@ const CompanyApplicants = () => {
           ))}
         </select>
       </div>
-      {applicants.length === 0 ? (
+      {filteredApplicants.length === 0 ? (
         <div className="bg-white rounded-lg shadow p-8 text-center">
           <p className="text-gray-600">No students have applied yet.</p>
         </div>
       ) : (
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <table className="min-w-full divide-y divide-gray-200">
-            <thead className="bg-gray-50">
+            <thead className="bg-gray-100">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Student
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Branch
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Role
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  CGPA
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Applied Date
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Actions
-                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Branch</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">CGPA</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Applied Date</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {applicants
-                .filter(applicant => selectedBranch === 'All' || applicant.student.branch === selectedBranch)
-                .map((applicant) => (
+              {filteredApplicants.map((applicant) => (
                 <tr key={applicant.applicationId} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       {applicant.student.photoPath ? (
-                        <img 
-                          src={`http://localhost:5000/uploadphoto/${applicant.student.photoPath}`}
-                          alt="Profile"
-                          style={{
-                            width: '8rem',
-                            height: '8rem',
-                            borderRadius: '50%',
-                            objectFit: 'contain',
-                            border: '2px solid #60a5fa'
-                          }}
-                        />
+                        <img src={`http://localhost:5000/uploadphoto/${applicant.student.photoPath}`} alt="Profile" className="w-10 h-10 rounded-full object-conatin" />
                       ) : (
-                        <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mr-3">
-                          <span className="text-gray-500 text-xs">No Photo</span>
-                        </div>
+                        <FaUserCircle className="w-10 h-10 text-gray-300" />
                       )}
-                      <div>
-                        <div className="text-sm font-medium text-gray-900">
-                          {applicant.student.name}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {applicant.student.email}
-                        </div>
+                      <div className="ml-4">
+                        <div className="text-sm font-medium text-gray-900">{applicant.student.name}</div>
+                        <div className="text-sm text-gray-500">{applicant.student.email}</div>
                       </div>
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {applicant.student.branch}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {applicant.student.role}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {applicant.student.cgpa}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {new Date(applicant.appliedAt).toLocaleDateString()}
-                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{applicant.student.branch}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{applicant.student.cgpa}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(applicant.appliedAt).toLocaleDateString()}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                       applicant.status === 'accepted' 
@@ -197,26 +159,11 @@ const CompanyApplicants = () => {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-                    <button
-                      onClick={() => viewStudentProfile(applicant.student)}
-                      className="text-blue-600 hover:text-blue-900"
-                    >
-                      View Profile
-                    </button>
+                    <button onClick={() => viewStudentProfile(applicant.student)} className="text-blue-600 hover:text-blue-900">View Profile</button>
                     {applicant.status === 'pending' && (
                       <>
-                        <button
-                          onClick={() => updateApplicationStatus(applicant.applicationId, 'accepted')}
-                          className="text-green-600 hover:text-green-900 ml-2"
-                        >
-                          Accept
-                        </button>
-                        <button
-                          onClick={() => updateApplicationStatus(applicant.applicationId, 'rejected')}
-                          className="text-red-600 hover:text-red-900 ml-2"
-                        >
-                          Reject
-                        </button>
+                        <button onClick={() => updateApplicationStatus(applicant.applicationId, 'accepted')} className="text-green-600 hover:text-green-900">Accept</button>
+                        <button onClick={() => updateApplicationStatus(applicant.applicationId, 'rejected')} className="text-red-600 hover:text-red-900">Reject</button>
                       </>
                     )}
                   </td>
@@ -226,152 +173,107 @@ const CompanyApplicants = () => {
           </table>
         </div>
       )}
-
-      {/* Student Profile Modal */}
-      {showModal && selectedStudent && (
-        <div className="modal-overlay modal-overlay-top">
-          <div className="modal-content modal-content--wide modal-content--no-scroll">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-bold text-gray-900">Student Profile</h3>
-              <button
-                onClick={closeModal}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <span className="sr-only">Close</span>
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Student Info */}
-              <div>
-                <div className="flex items-center mb-4">
-                  {selectedStudent.photoPath ? (
-                    <img 
-                      src={`http://localhost:5000/uploadphoto/${selectedStudent.photoPath}`}
-                      alt="Profile"
-                      style={{
-                        width: '8rem',
-                        height: '8rem',
-                        borderRadius: '50%',
-                        objectFit: 'contain',
-                        border: '2px solid #60a5fa'
-                      }}
-                    />
-                  ) : (
-                    <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center mr-4">
-                      <span className="text-gray-500 text-sm">No Photo</span>
-                    </div>
-                  )}
-                  <div>
-                    <h4 className="text-xl font-semibold text-gray-900">{selectedStudent.name}</h4>
-                    <p className="text-gray-600">{selectedStudent.email}</p>
-                  </div>
-                </div>
-                
-                <div className="space-y-3">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">Branch</label>
-                    <p className="text-gray-900">{selectedStudent.branch}</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">CGPA</label>
-                    <p className="text-gray-900">{selectedStudent.cgpa}</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">X Percentage</label>
-                    <p className="text-gray-900">{selectedStudent.XPercentage}</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700">XII Percentage</label>
-                    <p className="text-gray-900">{selectedStudent.XIIPercentage}</p>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Documents */}
-              <div>
-                <h4 className="text-lg font-semibold text-gray-900 mb-3">Documents</h4>
-                <div className="space-y-2">
-                  {selectedStudent.cvPath && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">CV</label>
-                      <a 
-                        href={`http://localhost:5000/uploadcv/${selectedStudent.cvPath}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800 underline"
-                      >
-                        View CV
-                      </a>
-                    </div>
-                  )}
-                  
-                  {selectedStudent.aadharPath && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">Aadhar Card</label>
-                      <a 
-                        href={`http://localhost:5000/uploadaadhar/${selectedStudent.aadharPath}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800 underline"
-                      >
-                        View Aadhar
-                      </a>
-                    </div>
-                  )}
-                  
-                  {selectedStudent.ugMarksheetPath && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">UG Marksheet</label>
-                      <a 
-                        href={`http://localhost:5000/uploadugmarks/${selectedStudent.ugMarksheetPath}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800 underline"
-                      >
-                        View UG Marksheet
-                      </a>
-                    </div>
-                  )}
-                  
-                  {selectedStudent.xMarksheetPath && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">X Marksheet</label>
-                      <a 
-                        href={`http://localhost:5000/uploadxmarks/${selectedStudent.xMarksheetPath}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800 underline"
-                      >
-                        View X Marksheet
-                      </a>
-                    </div>
-                  )}
-                  
-                  {selectedStudent.xiiMarksheetPath && (
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700">XII Marksheet</label>
-                      <a 
-                        href={`http://localhost:5000/uploadxiimarks/${selectedStudent.xiiMarksheetPath}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800 underline"
-                      >
-                        View XII Marksheet
-                      </a>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
+
+const ProfileOverlay = ({ student, onClose }) => (
+    <div className="absolute inset-0 bg-white rounded-xl p-6 z-20" style={{ maxHeight: '95vh' }}>
+        <div className="flex justify-between items-center mb-4">
+            <h3 className="text-xl font-bold text-gray-900">Student Profile</h3>
+            <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+                <FaTimes size={24} />
+            </button>
+        </div>
+        <ProfileView student={student} />
+    </div>
+);
+
+const ProfileView = ({ student }) => (
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
+    <div style={{ padding: '2rem', backgroundColor: '#fff', color: 'black', borderRadius: '1rem', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            {student.photoPath ? (
+                <img
+                    src={`http://localhost:5000/uploadphoto/${student.photoPath}`}
+                    alt="Profile"
+                    style={{ width: '6rem', height: '6rem', borderRadius: '9999px', objectFit: 'contain', border: '4px solid #93c5fd' }}
+                />
+            ) : (
+                <FaUserCircle style={{ width: '6rem', height: '6rem', color: '#d1d5db' }} />
+            )}
+            <div>
+                <h1 style={{ fontSize: '2rem', fontWeight: 'bold', color: 'black' }}>{student.name || 'Your Name'}</h1>
+                <p style={{ fontSize: '1rem', color: 'black' }}>{student.email}</p>
+                <p style={{ fontSize: '0.875rem', color: '#93c5fd', fontWeight: '600', marginTop: '0.25rem' }}>
+                    {student.branch ? student.branch.name : 'Branch'} • CGPA: {student.cgpa ?? '-'}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem' }}>
+        <div style={{ padding: '1.5rem', backgroundColor: '#f9fafb', borderRadius: '0.5rem' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1rem' }}>Personal & Academic Details</h2>
+            <ul style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '1rem' }}>
+                <li style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontWeight: '600', color: '#4b5563' }}>Name:</span>
+                    <span>{student.name || '-'}</span>
+                </li>
+                <li style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontWeight: '600', color: '#4b5563' }}>Email:</span>
+                    <span>{student.email || '-'}</span>
+                </li>
+                <li style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontWeight: '600', color: '#4b5563' }}>Branch:</span>
+                    <span>{student.branch ? student.branch.name : '-'}</span>
+                </li>
+                <li style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontWeight: '600', color: '#4b5563' }}>CGPA:</span>
+                    <span>{student.cgpa ?? '-'}</span>
+                </li>
+                <li style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontWeight: '600', color: '#4b5563' }}>X %:</span>
+                    <span>{student.XPercentage ?? '-'}</span>
+                </li>
+                <li style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontWeight: '600', color: '#4b5563' }}>XII %:</span>
+                    <span>{student.XIIPercentage ?? '-'}</span>
+                </li>
+                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ fontWeight: '600', color: '#4b5563' }}>Roll / Reg:</span>
+                  <span>{student.rollNumber || '-'} / {student.registrationNumber || '-'}</span>
+                </li>
+            </ul>
+        </div>
+        <div style={{ padding: '1.5rem', backgroundColor: '#f9fafb', borderRadius: '0.5rem' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1rem' }}>Documents</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                <DocumentItem icon={<FaFilePdf style={{ color: '#ef4444' }} />} label="CV" path={student.cvPath} type="uploadcv" />
+                <DocumentItem icon={<FaIdCard style={{ color: '#6366f1' }} />} label="Aadhar" path={student.aadharPath} type="uploadaadhar" />
+                <DocumentItem icon={<FaFileAlt style={{ color: '#10b981' }} />} label="UG Marksheet" path={student.ugMarksheetPath} type="uploadugmarks" />
+                <DocumentItem icon={<FaFileAlt style={{ color: '#f59e0b' }} />} label="X Marksheet" path={student.xMarksheetPath} type="uploadxmarks" />
+                <DocumentItem icon={<FaFileAlt style={{ color: '#8b5cf6' }} />} label="XII Marksheet" path={student.xiiMarksheetPath} type="uploadxiimarks" />
+            </div>
+        </div>
+    </div>
+  </div>
+);
+
+const DocumentItem = ({ icon, label, path, type }) => (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.75rem', borderRadius: '0.5rem', backgroundColor: 'white', border: '1px solid #e5e7eb' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            {icon}
+            <span style={{ fontWeight: '600', color: '#374151', fontSize: '0.875rem' }}>{label}</span>
+        </div>
+        {path ? (
+            <a href={`http://localhost:5000/${type}/${path}`} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'underline', fontSize: '0.875rem' }}>
+                View
+            </a>
+        ) : (
+            <span style={{ color: '#9ca3af', fontSize: '0.875rem' }}>Not Uploaded</span>
+        )}
+    </div>
+);
 
 export default CompanyApplicants;

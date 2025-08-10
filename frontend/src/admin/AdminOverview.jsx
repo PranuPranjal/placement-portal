@@ -183,7 +183,7 @@ const AdminOverview = () => {
   if (error) return <div className="text-red-600">{error}</div>;
 
   return (
-    <div className="space-y-6" style={{ marginLeft: '16rem'}}>
+    <div className="space-y-6">
       <div className="stats-grid">
         <StatCard label="Total Students" value={stats.totalStudents} />
         <StatCard label="Total Companies" value={stats.totalCompanies} />

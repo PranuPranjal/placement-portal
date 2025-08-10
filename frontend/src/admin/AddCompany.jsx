@@ -55,7 +55,6 @@ const AddCompany = () => {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${token}`
-        // Don't set Content-Type, let browser set it for FormData
       },
       body: formData
     });
@@ -76,7 +75,7 @@ const AddCompany = () => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow p-6 max-w-3xl mx-auto" style={{ marginLeft: '30rem'}}>
+    <div className="bg-white rounded-xl shadow p-6 max-w-3xl mx-auto" style={{ marginLeft: '17rem'}}>
       <h3 className="text-lg font-semibold text-blue-700 mb-6">Add New Company</h3>
 
       {/* Allowed Branches */}
@@ -132,6 +131,7 @@ const AddCompany = () => {
               value={name}
               onChange={e => setName(e.target.value)}
               required 
+              autoComplete="organization"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" 
             />
           </div>

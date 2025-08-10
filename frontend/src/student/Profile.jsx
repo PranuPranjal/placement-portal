@@ -1,621 +1,310 @@
-import React from 'react';
-import { FaUserCircle, FaFilePdf, FaIdCard, FaFileAlt, FaSave, FaTimes, FaUpload } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { FaUserCircle, FaFilePdf, FaIdCard, FaFileAlt, FaSave, FaTimes, FaUpload, FaEdit } from 'react-icons/fa';
 
-const Profile = () => {
-  const [student, setStudent] = React.useState(null);
-  const [branches, setBranches] = React.useState([]);
-  const [isEditing, setIsEditing] = React.useState(false);
-  const [cvFile, setCvFile] = React.useState(null);
-  const [photoFile, setPhotoFile] = React.useState(null);
-  const [aadharFile, setAadharFile] = React.useState(null);
-  const [ugMarksheetFile, setUgMarksheetFile] = React.useState(null);
-  const [xMarksheetFile, setXMarksheetFile] = React.useState(null);
-  const [xiiMarksheetFile, setXiiMarksheetFile] = React.useState(null);
-  const [loading, setLoading] = React.useState(false);
-
-  const [editForm, setEditForm] = React.useState({
-    name: '',
-    cgpa: '',
-    XPercentage: '',
-    XIIPercentage: '',
-    branchId: ''
+// API call functions
+const fetchProfile = async () => {
+  const token = localStorage.getItem('token');
+  const res = await fetch('http://localhost:5000/api/student/profile', {
+    headers: { Authorization: `Bearer ${token}` }
   });
+  if (!res.ok) throw new Error('Failed to fetch profile');
+  return res.json();
+};
 
-  React.useEffect(() => {
-    const fetchProfile = async () => {
-      const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:5000/api/student/profile', {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setStudent(data);
-        setEditForm({
-          name: data.name || '',
-          cgpa: data.cgpa?.toString() || '',
-          XPercentage: data.XPercentage?.toString() || '',
-          XIIPercentage: data.XIIPercentage?.toString() || '',
-          branchId: data.branchId?.toString() || ''
-        });
-      }
-    };
+const fetchBranches = async () => {
+  const res = await fetch('http://localhost:5000/api/branches');
+  if (!res.ok) throw new Error('Failed to fetch branches');
+  return res.json();
+};
 
-    const fetchBranches = async () => {
-      const res = await fetch('http://localhost:5000/api/branches');
-      const data = await res.json();
-      if (res.ok) setBranches(data);
-    };
-
-    fetchProfile();
-    fetchBranches();
-  }, []);
-
-  const handleEdit = () => {
-    if (student) {
-      setEditForm({
-        name: student.name || '',
-        cgpa: student.cgpa?.toString() || '',
-        XPercentage: student.XPercentage?.toString() || '',
-        XIIPercentage: student.XIIPercentage?.toString() || '',
-        branchId: student.branchId?.toString() || ''
-      });
-    }
-    setIsEditing(true);
-  };
-
-  const handleCancel = () => {
-    if (student) {
-      setEditForm({
-        name: student.name || '',
-        cgpa: student.cgpa?.toString() || '',
-        XPercentage: student.XPercentage?.toString() || '',
-        XIIPercentage: student.XIIPercentage?.toString() || '',
-        branchId: student.branchId?.toString() || ''
-      });
-    }
-    setIsEditing(false);
-  };
-
-  const handleSave = async () => {
-    setLoading(true);
-    try {
-      const formData = new FormData();
-      formData.append('name', editForm.name);
-      formData.append('cgpa', editForm.cgpa);
-      formData.append('XPercentage', editForm.XPercentage);
-      formData.append('XIIPercentage', editForm.XIIPercentage);
-      formData.append('branchId', editForm.branchId);
-
-      if (cvFile) formData.append('cv', cvFile);
-      if (photoFile) formData.append('photo', photoFile);
-      if (aadharFile) formData.append('aadhar', aadharFile);
-      if (ugMarksheetFile) formData.append('ugMarksheet', ugMarksheetFile);
-      if (xMarksheetFile) formData.append('xMarksheet', xMarksheetFile);
-      if (xiiMarksheetFile) formData.append('xiiMarksheet', xiiMarksheetFile);
-
-      const token = localStorage.getItem('token');
-      const res = await fetch('http://localhost:5000/api/student/profile', {
+const updateProfile = async (formData) => {
+    const token = localStorage.getItem('token');
+    const res = await fetch('http://localhost:5000/api/student/profile', {
         method: 'PUT',
         headers: { Authorization: `Bearer ${token}` },
-        body: formData
-      });
-
-      if (res.ok) {
-        const updatedStudent = await res.json();
-        setStudent(updatedStudent);
-        setIsEditing(false);
-        alert('Profile updated successfully!');
-        window.location.reload();
-      } else {
+        body: formData,
+    });
+    if (!res.ok) {
         const error = await res.json();
-        alert(error.error || 'Failed to update profile');
+        throw new Error(error.error || 'Failed to update profile');
+    }
+    return res.json();
+};
+
+const Profile = () => {
+  const [student, setStudent] = useState(null);
+  const [branches, setBranches] = useState([]);
+  const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true);
+        const [profileData, branchesData] = await Promise.all([fetchProfile(), fetchBranches()]);
+        setStudent(profileData);
+        setBranches(branchesData);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
+    };
+    loadData();
+  }, []);
+
+  const handleSave = async (formData) => {
+    try {
+      const updatedStudent = await updateProfile(formData);
+      setStudent(updatedStudent);
+      setIsEditing(false);
+      alert('Profile updated successfully!');
+      window.location.reload();
     } catch (err) {
-      alert('Network error');
-    } finally {
-      setLoading(false);
+      alert(err.message);
     }
   };
 
-  if (!student) {
+  if (loading) {
     return (
-      <div className="flex items-center justify-center h-[60vh]">
-        <div className="flex items-center gap-3 text-gray-500">
-          <div className="w-5 h-5 rounded-full border-2 border-gray-300 border-t-blue-500 animate-spin" />
-          <span>Loading profile…</span>
-        </div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '60vh' }}>
+        <div className="w-16 h-16 border-4 border-dashed rounded-full animate-spin border-blue-500"></div>
       </div>
     );
   }
 
+  if (error) {
+    return <div style={{ textAlign: 'center', color: 'red' }}>Error: {error}</div>;
+  }
+
   return (
-    <div className="max-w-5xl mx-auto space-y-12 px-6 md:px-8" style={{ marginLeft: '23rem'}}>
-      {/* Page heading */}
-      <div className="flex items-end justify-between mb-4 md:mb-6">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Student Profile</h2>
-          <p className="text-sm text-gray-500">View and manage your personal, academic information and documents</p>
-        </div>
-      </div>
-      {/* Header card */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-10">
-        <div className="flex items-center justify-between min-h-40 pl-6 md:pl-10">
-          <div className="flex items-center gap-6">
-            {student.photoPath ? (
-              <img
-                src={`http://localhost:5000/uploadphoto/${student.photoPath}`}
-                alt="Profile"
-                className="w-24 h-24 rounded-full object-contain ring-2 ring-blue-200"
-              />
-            ) : (
-              <FaUserCircle className="w-20 h-20 text-gray-300" />
-            )}
-            <div className="flex flex-col justify-center h-24">
-              <h3 className="text-xl font-semibold text-gray-900">{student.name || 'Your Name'}</h3>
-              <p className="text-sm text-gray-600">{student.email}</p>
-              <div className="mt-1 text-sm text-gray-700">
-                {student.branch ? student.branch.name : 'Branch'} • CGPA: {student.cgpa ?? '-'}
-              </div>
-            </div>
-          </div>
-          {!isEditing && (
-            <button
-              onClick={handleEdit}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-sm"
-            >
-              Edit Profile
-            </button>
-          )}
-        </div>
-      </div>
-
+    <div style={{ maxWidth: '1280px', margin: 'auto', padding: '1rem' }}>
       {isEditing ? (
-        <div className="space-y-12">
-          {/* Edit form sections */}
-          <div className="space-y-12">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 md:p-10 mt-2">
-              <h4 className="text-base font-semibold text-gray-900 mb-6">Personal Information</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                  <input
-                    type="text"
-                    value={editForm.name}
-                    onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                  <input
-                    type="email"
-                    value={student.email}
-                    disabled
-                    className="w-full px-3 py-2 border border-gray-200 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Branch</label>
-                  <select
-                    value={editForm.branchId}
-                    onChange={(e) => setEditForm({ ...editForm, branchId: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  >
-                    {branches.map((branch) => (
-                      <option key={branch.id} value={branch.id}>
-                        {branch.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 md:p-10 mt-2">
-              <h4 className="text-base font-semibold text-gray-900 mb-6">Academic Information</h4>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">CGPA</label>
-                  <input
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    max="10"
-                    value={editForm.cgpa}
-                    onChange={(e) => setEditForm({ ...editForm, cgpa: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">X Percentage</label>
-                  <input
-                    type="number"
-                    value={editForm.XPercentage}
-                    onChange={(e) => setEditForm({ ...editForm, XPercentage: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">XII Percentage</label>
-                  <input
-                    type="number"
-                    value={editForm.XIIPercentage}
-                    onChange={(e) => setEditForm({ ...editForm, XIIPercentage: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 md:p-10 mt-2">
-              <h4 className="text-base font-semibold text-gray-900 mb-6">Documents</h4>
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">CV</label>
-                  <label className="w-full flex items-center justify-between px-3 py-2 border border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-blue-400 cursor-pointer">
-                    <span className="text-sm flex items-center gap-2"><FaUpload className="text-gray-400" /> Choose file</span>
-                    <input
-                      type="file"
-                      accept=".pdf,.doc,.docx"
-                      onChange={(e) => setCvFile(e.target.files[0])}
-                      className="hidden"
-                    />
-                  </label>
-                  {student.cvPath && (
-                    <div className="mt-2 text-sm">
-                      <span className="text-gray-600">Current: </span>
-                      <a
-                        href={`http://localhost:5000/uploadcv/${student.cvPath}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:text-blue-800 underline"
-                      >
-                        View CV
-                      </a>
-                    </div>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Profile Photo</label>
-                  <div className="flex items-center gap-4">
-                    {student.photoPath ? (
-                      <img
-                        src={`http://localhost:5000/uploadphoto/${student.photoPath}`}
-                        alt="Current"
-                        className="w-16 h-16 rounded-full object-cover ring-2 ring-blue-200"
-                      />
-                    ) : (
-                      <FaUserCircle className="w-16 h-16 text-gray-300" />
-                    )}
-                    <div className="flex-1">
-                      <label className="w-full flex items-center justify-between px-3 py-2 border border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-blue-400 cursor-pointer">
-                        <span className="text-sm flex items-center gap-2"><FaUpload className="text-gray-400" /> Choose image</span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={(e) => setPhotoFile(e.target.files[0])}
-                          className="hidden"
-                        />
-                      </label>
-                      <small className="text-gray-500">JPEG, PNG, or JPG</small>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Aadhar</label>
-                    <label className="w-full flex items-center justify-between px-3 py-2 border border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-blue-400 cursor-pointer">
-                      <span className="text-sm flex items-center gap-2"><FaUpload className="text-gray-400" /> Choose file</span>
-                      <input
-                        type="file"
-                        accept=".pdf,.doc,.docx"
-                        onChange={(e) => setAadharFile(e.target.files[0])}
-                        className="hidden"
-                      />
-                    </label>
-                    {student.aadharPath && (
-                      <div className="mt-2 text-sm">
-                        <a
-                          href={`http://localhost:5000/uploadaadhar/${student.aadharPath}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-800 underline"
-                        >
-                          View Aadhar
-                        </a>
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">UG Marksheet</label>
-                    <label className="w-full flex items-center justify-between px-3 py-2 border border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-blue-400 cursor-pointer">
-                      <span className="text-sm flex items-center gap-2"><FaUpload className="text-gray-400" /> Choose file</span>
-                      <input
-                        type="file"
-                        accept=".pdf,.doc,.docx"
-                        onChange={(e) => setUgMarksheetFile(e.target.files[0])}
-                        className="hidden"
-                      />
-                    </label>
-                    {student.ugMarksheetPath && (
-                      <div className="mt-2 text-sm">
-                        <a
-                          href={`http://localhost:5000/uploadugmarks/${student.ugMarksheetPath}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-800 underline"
-                        >
-                          View UG Marksheet
-                        </a>
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">X Marksheet</label>
-                    <label className="w-full flex items-center justify-between px-3 py-2 border border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-blue-400 cursor-pointer">
-                      <span className="text-sm flex items-center gap-2"><FaUpload className="text-gray-400" /> Choose file</span>
-                      <input
-                        type="file"
-                        accept=".pdf,.doc,.docx"
-                        onChange={(e) => setXMarksheetFile(e.target.files[0])}
-                        className="hidden"
-                      />
-                    </label>
-                    {student.xMarksheetPath && (
-                      <div className="mt-2 text-sm">
-                        <a
-                          href={`http://localhost:5000/uploadxmarks/${student.xMarksheetPath}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-800 underline"
-                        >
-                          View X Marksheet
-                        </a>
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">XII Marksheet</label>
-                    <label className="w-full flex items-center justify-between px-3 py-2 border border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-blue-400 cursor-pointer">
-                      <span className="text-sm flex items-center gap-2"><FaUpload className="text-gray-400" /> Choose file</span>
-                      <input
-                        type="file"
-                        accept=".pdf,.doc,.docx"
-                        onChange={(e) => setXiiMarksheetFile(e.target.files[0])}
-                        className="hidden"
-                      />
-                    </label>
-                    {student.xiiMarksheetPath && (
-                      <div className="mt-2 text-sm">
-                        <a
-                          href={`http://localhost:5000/uploadxiimarks/${student.xiiMarksheetPath}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-800 underline"
-                        >
-                          View XII Marksheet
-                        </a>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom actions */}
-          <div className="flex items-center justify-end gap-4 pt-2">
-            <button
-              onClick={handleCancel}
-              disabled={loading}
-              className="px-5 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 disabled:opacity-50 inline-flex items-center gap-2"
-            >
-              <FaTimes /> Cancel
-            </button>
-            <button
-              onClick={handleSave}
-              disabled={loading}
-              className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 inline-flex items-center gap-2"
-            >
-              {loading ? 'Saving…' : (<><FaSave /> Save Changes</>)}
-            </button>
-          </div>
-        </div>
+        <ProfileForm
+          student={student}
+          branches={branches}
+          onCancel={() => setIsEditing(false)}
+          onSave={handleSave}
+        />
       ) : (
-        <div className="space-y-12">
-          {/* Details cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 md:p-10">
-              <h4 className="text-base font-semibold text-gray-900 mb-6">Personal Details</h4>
-              <dl className="grid grid-cols-1 gap-3 text-sm">
-                <div className="flex justify-between border-b pb-2">
-                  <dt className="text-gray-500">Name</dt>
-                  <dd className="font-medium text-gray-900">{student.name || '-'}</dd>
-                </div>
-                <div className="flex justify-between border-b pb-2">
-                  <dt className="text-gray-500">Email</dt>
-                  <dd className="font-medium text-gray-900">{student.email || '-'}</dd>
-                </div>
-                <div className="flex justify-between">
-                  <dt className="text-gray-500">Branch</dt>
-                  <dd className="font-medium text-gray-900">{student.branch ? student.branch.name : '-'}</dd>
-                </div>
-              </dl>
-            </div>
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 md:p-10">
-              <h4 className="text-base font-semibold text-gray-900 mb-6">Academic Details</h4>
-              <dl className="grid grid-cols-1 gap-3 text-sm">
-                <div className="flex justify-between border-b pb-2">
-                  <dt className="text-gray-500">CGPA</dt>
-                  <dd className="font-medium text-gray-900">{student.cgpa ?? '-'}</dd>
-                </div>
-                <div className="flex justify-between border-b pb-2">
-                  <dt className="text-gray-500">X Percentage</dt>
-                  <dd className="font-medium text-gray-900">{student.XPercentage ?? '-'}</dd>
-                </div>
-                <div className="flex justify-between border-b pb-2">
-                  <dt className="text-gray-500">XII Percentage</dt>
-                  <dd className="font-medium text-gray-900">{student.XIIPercentage ?? '-'}</dd>
-                </div>
-                <div className="flex justify-between">
-                  <dt className="text-gray-500">Roll / Registration</dt>
-                  <dd className="font-medium text-gray-900">{student.rollNumber || '-'} / {student.registrationNumber || '-'}</dd>
-                </div>
-              </dl>
-            </div>
-          </div>
-
-          {/* Documents */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 md:p-10">
-            <h4 className="text-base font-semibold text-gray-900 mb-6">Documents</h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm">
-              {/* CV */}
-              <div className="flex items-center justify-between p-4 rounded-lg border border-gray-100 bg-gray-50">
-                <div className="flex items-center gap-3">
-                  <FaFilePdf className="text-red-500" />
-                  <div>
-                    <div className="font-medium text-gray-800">CV</div>
-                    <div className="text-xs text-gray-500">PDF/DOC/DOCX</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  {student.cvPath ? (
-                    <span className="px-2 py-0.5 text-xs rounded-full bg-green-100 text-green-700">Uploaded</span>
-                  ) : (
-                    <span className="px-2 py-0.5 text-xs rounded-full bg-gray-200 text-gray-700">Not uploaded</span>
-                  )}
-                  {student.cvPath && (
-                    <a
-                      href={`http://localhost:5000/uploadcv/${student.cvPath}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-800 underline"
-                    >
-                      View
-                    </a>
-                  )}
-                </div>
-              </div>
-
-              {/* Aadhar */}
-              <div className="flex items-center justify-between p-4 rounded-lg border border-gray-100 bg-gray-50">
-                <div className="flex items-center gap-3">
-                  <FaIdCard className="text-indigo-500" />
-                  <div>
-                    <div className="font-medium text-gray-800">Aadhar</div>
-                    <div className="text-xs text-gray-500">PDF/DOC/DOCX</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  {student.aadharPath ? (
-                    <span className="px-2 py-0.5 text-xs rounded-full bg-green-100 text-green-700">Uploaded</span>
-                  ) : (
-                    <span className="px-2 py-0.5 text-xs rounded-full bg-gray-200 text-gray-700">Not uploaded</span>
-                  )}
-                  {student.aadharPath && (
-                    <a
-                      href={`http://localhost:5000/uploadaadhar/${student.aadharPath}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-800 underline"
-                    >
-                      View
-                    </a>
-                  )}
-                </div>
-              </div>
-
-              {/* UG Marksheet */}
-              <div className="flex items-center justify-between p-4 rounded-lg border border-gray-100 bg-gray-50">
-                <div className="flex items-center gap-3">
-                  <FaFileAlt className="text-emerald-600" />
-                  <div>
-                    <div className="font-medium text-gray-800">UG Marksheet</div>
-                    <div className="text-xs text-gray-500">PDF/DOC/DOCX</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  {student.ugMarksheetPath ? (
-                    <span className="px-2 py-0.5 text-xs rounded-full bg-green-100 text-green-700">Uploaded</span>
-                  ) : (
-                    <span className="px-2 py-0.5 text-xs rounded-full bg-gray-200 text-gray-700">Not uploaded</span>
-                  )}
-                  {student.ugMarksheetPath && (
-                    <a
-                      href={`http://localhost:5000/uploadugmarks/${student.ugMarksheetPath}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-800 underline"
-                    >
-                      View
-                    </a>
-                  )}
-                </div>
-              </div>
-
-              {/* X Marksheet */}
-              <div className="flex items-center justify-between p-4 rounded-lg border border-gray-100 bg-gray-50">
-                <div className="flex items-center gap-3">
-                  <FaFileAlt className="text-amber-600" />
-                  <div>
-                    <div className="font-medium text-gray-800">X Marksheet</div>
-                    <div className="text-xs text-gray-500">PDF/DOC/DOCX</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  {student.xMarksheetPath ? (
-                    <span className="px-2 py-0.5 text-xs rounded-full bg-green-100 text-green-700">Uploaded</span>
-                  ) : (
-                    <span className="px-2 py-0.5 text-xs rounded-full bg-gray-200 text-gray-700">Not uploaded</span>
-                  )}
-                  {student.xMarksheetPath && (
-                    <a
-                      href={`http://localhost:5000/uploadxmarks/${student.xMarksheetPath}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-800 underline"
-                    >
-                      View
-                    </a>
-                  )}
-                </div>
-              </div>
-
-              {/* XII Marksheet */}
-              <div className="flex items-center justify-between p-4 rounded-lg border border-gray-100 bg-gray-50">
-                <div className="flex items-center gap-3">
-                  <FaFileAlt className="text-purple-600" />
-                  <div>
-                    <div className="font-medium text-gray-800">XII Marksheet</div>
-                    <div className="text-xs text-gray-500">PDF/DOC/DOCX</div>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3">
-                  {student.xiiMarksheetPath ? (
-                    <span className="px-2 py-0.5 text-xs rounded-full bg-green-100 text-green-700">Uploaded</span>
-                  ) : (
-                    <span className="px-2 py-0.5 text-xs rounded-full bg-gray-200 text-gray-700">Not uploaded</span>
-                  )}
-                  {student.xiiMarksheetPath && (
-                    <a
-                      href={`http://localhost:5000/uploadxiimarks/${student.xiiMarksheetPath}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-800 underline"
-                    >
-                      View
-                    </a>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <ProfileView student={student} onEdit={() => setIsEditing(true)} />
       )}
     </div>
   );
 };
+
+const ProfileView = ({ student, onEdit }) => (
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+    <div style={{ padding: '2rem', backgroundColor: 'white', borderRadius: '1rem', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)', position: 'relative' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            {student.photoPath ? (
+                <img
+                    src={`http://localhost:5000/uploadphoto/${student.photoPath}`}
+                    alt="Profile"
+                    style={{ width: '8rem', height: '8rem', borderRadius: '9999px', objectFit: 'contain', border: '4px solid #bfdbfe', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }}
+                />
+            ) : (
+                <FaUserCircle style={{ width: '8rem', height: '8rem', color: '#d1d5db' }} />
+            )}
+            <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
+                <h1 style={{ fontSize: '2.25rem', fontWeight: 'bold', color: '#1f2937' }}>{student.name || 'Your Name'}</h1>
+                <p style={{ fontSize: '1.125rem', color: '#6b7280', marginTop: '0.25rem' }}>{student.email}</p>
+                <p style={{ fontSize: '1rem', color: '#3b82f6', fontWeight: '600', marginTop: '0.5rem' }}>
+                    {student.branch ? student.branch.name : 'Branch'} • CGPA: {student.cgpa ?? '-'}
+                </p>
+            </div>
+        </div>
+        <button
+            onClick={onEdit}
+            style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', backgroundColor: '#3b82f6', color: 'white', paddingTop: '0.5rem', paddingBottom: '0.5rem', paddingLeft: '1rem', paddingRight: '1rem', borderRadius: '9999px', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+        >
+            <FaEdit />
+            <span>Edit Profile</span>
+        </button>
+    </div>
+
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
+        <div style={{ padding: '2rem', backgroundColor: 'white', borderRadius: '1rem', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1.5rem' }}>Personal Details</h2>
+            <ul style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '1.125rem' }}>
+                <li style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontWeight: '600', color: '#4b5563' }}>Name:</span>
+                    <span>{student.name || '-'}</span>
+                </li>
+                <li style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontWeight: '600', color: '#4b5563' }}>Email:</span>
+                    <span>{student.email || '-'}</span>
+                </li>
+                <li style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontWeight: '600', color: '#4b5563' }}>Branch:</span>
+                    <span>{student.branch ? student.branch.name : '-'}</span>
+                </li>
+            </ul>
+        </div>
+        <div style={{ padding: '2rem', backgroundColor: 'white', borderRadius: '1rem', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1.5rem' }}>Academic Details</h2>
+            <ul style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '1.125rem' }}>
+                <li style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontWeight: '600', color: '#4b5563' }}>CGPA:</span>
+                    <span>{student.cgpa ?? '-'}</span>
+                </li>
+                <li style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontWeight: '600', color: '#4b5563' }}>X %:</span>
+                    <span>{student.XPercentage ?? '-'}</span>
+                </li>
+                <li style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <span style={{ fontWeight: '600', color: '#4b5563' }}>XII %:</span>
+                    <span>{student.XIIPercentage ?? '-'}</span>
+                </li>
+                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ fontWeight: '600', color: '#4b5563' }}>Roll / Reg:</span>
+                  <span>{student.rollNumber || '-'} / {student.registrationNumber || '-'}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div style={{ padding: '2rem', backgroundColor: 'white', borderRadius: '1rem', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)' }}>
+        <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1.5rem' }}>Documents</h2>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
+            <DocumentItem icon={<FaFilePdf style={{ color: '#ef4444', fontSize: '1.5rem' }} />} label="CV" path={student.cvPath} type="uploadcv" />
+            <DocumentItem icon={<FaIdCard style={{ color: '#6366f1', fontSize: '1.5rem' }} />} label="Aadhar" path={student.aadharPath} type="uploadaadhar" />
+            <DocumentItem icon={<FaFileAlt style={{ color: '#10b981', fontSize: '1.5rem' }} />} label="UG Marksheet" path={student.ugMarksheetPath} type="uploadugmarks" />
+            <DocumentItem icon={<FaFileAlt style={{ color: '#f59e0b', fontSize: '1.5rem' }} />} label="X Marksheet" path={student.xMarksheetPath} type="uploadxmarks" />
+            <DocumentItem icon={<FaFileAlt style={{ color: '#8b5cf6', fontSize: '1.5rem' }} />} label="XII Marksheet" path={student.xiiMarksheetPath} type="uploadxiimarks" />
+        </div>
+    </div>
+  </div>
+);
+
+const DocumentItem = ({ icon, label, path, type }) => (
+    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', borderRadius: '0.5rem', backgroundColor: '#f9fafb', border: '1px solid #e5e7eb' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            {icon}
+            <span style={{ fontWeight: '600', color: '#374151' }}>{label}</span>
+        </div>
+        {path ? (
+            <a href={`http://localhost:5000/${type}/${path}`} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'underline' }}>
+                View
+            </a>
+        ) : (
+            <span style={{ color: '#9ca3af' }}>Not Uploaded</span>
+        )}
+    </div>
+);
+
+const ProfileForm = ({ student, branches, onCancel, onSave }) => {
+    const [formData, setFormData] = useState({
+        name: student.name || '',
+        cgpa: student.cgpa?.toString() || '',
+        XPercentage: student.XPercentage?.toString() || '',
+        XIIPercentage: student.XIIPercentage?.toString() || '',
+        branchId: student.branchId?.toString() || '',
+    });
+    const [files, setFiles] = useState({});
+    const [loading, setLoading] = useState(false);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleFileChange = (e) => {
+        const { name, files: inputFiles } = e.target;
+        setFiles(prev => ({ ...prev, [name]: inputFiles[0] }));
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setLoading(true);
+        const data = new FormData();
+        for (const key in formData) {
+            data.append(key, formData[key]);
+        }
+        for (const key in files) {
+            if (files[key]) {
+                data.append(key, files[key]);
+            }
+        }
+        await onSave(data);
+        setLoading(false);
+    };
+
+    return (
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            <div style={{ padding: '2rem', backgroundColor: 'white', borderRadius: '1rem', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)' }}>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1.5rem' }}>Edit Personal Information</h2>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+                    <InputField label="Name" name="name" value={formData.name} onChange={handleChange} />
+                    <InputField label="Email" name="email" value={student.email} disabled />
+                    <SelectField label="Branch" name="branchId" value={formData.branchId} onChange={handleChange} options={branches} />
+                </div>
+            </div>
+
+            <div style={{ padding: '2rem', backgroundColor: 'white', borderRadius: '1rem', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)' }}>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1.5rem' }}>Edit Academic Information</h2>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
+                    <InputField label="CGPA" name="cgpa" type="number" value={formData.cgpa} onChange={handleChange} />
+                    <InputField label="X Percentage" name="XPercentage" type="number" value={formData.XPercentage} onChange={handleChange} />
+                    <InputField label="XII Percentage" name="XIIPercentage" type="number" value={formData.XIIPercentage} onChange={handleChange} />
+                </div>
+            </div>
+
+            <div style={{ padding: '2rem', backgroundColor: 'white', borderRadius: '1rem', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)' }}>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1.5rem' }}>Upload Documents</h2>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
+                    <FileInputField label="CV" name="cv" onChange={handleFileChange} currentPath={student.cvPath} type="uploadcv" />
+                    <FileInputField label="Photo" name="photo" onChange={handleFileChange} currentPath={student.photoPath} type="uploadphoto" accept="image/*" />
+                    <FileInputField label="Aadhar" name="aadhar" onChange={handleFileChange} currentPath={student.aadharPath} type="uploadaadhar" />
+                    <FileInputField label="UG Marksheet" name="ugMarksheet" onChange={handleFileChange} currentPath={student.ugMarksheetPath} type="uploadugmarks" />
+                    <FileInputField label="X Marksheet" name="xMarksheet" onChange={handleFileChange} currentPath={student.xMarksheetPath} type="uploadxmarks" />
+                    <FileInputField label="XII Marksheet" name="xiiMarksheet" onChange={handleFileChange} currentPath={student.xiiMarksheetPath} type="uploadxiimarks" />
+                </div>
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
+                <button type="button" onClick={onCancel} style={{ paddingTop: '0.5rem', paddingBottom: '0.5rem', paddingLeft: '1.5rem', paddingRight: '1.5rem', backgroundColor: '#e5e7eb', color: '#1f2937', borderRadius: '9999px' }}>Cancel</button>
+                <button type="submit" disabled={loading} style={{ paddingTop: '0.5rem', paddingBottom: '0.5rem', paddingLeft: '1.5rem', paddingRight: '1.5rem', backgroundColor: '#3b82f6', color: 'white', borderRadius: '9999px' }}>
+                    {loading ? 'Saving...' : 'Save Changes'}
+                </button>
+            </div>
+        </form>
+    );
+};
+
+const InputField = ({ label, ...props }) => (
+    <div>
+        <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.25rem' }}>{label}</label>
+        <input {...props} style={{ width: '100%', padding: '0.5rem 1rem', border: '1px solid #d1d5db', borderRadius: '0.5rem' }} />
+    </div>
+);
+
+const SelectField = ({ label, options, ...props }) => (
+    <div>
+        <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.25rem' }}>{label}</label>
+        <select {...props} style={{ width: '100%', padding: '0.5rem 1rem', border: '1px solid #d1d5db', borderRadius: '0.5rem' }}>
+            {options.map(opt => <option key={opt.id} value={opt.id}>{opt.name}</option>)}
+        </select>
+    </div>
+);
+
+const FileInputField = ({ label, name, onChange, currentPath, type, accept = ".pdf,.doc,.docx" }) => (
+    <div>
+        <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.25rem' }}>{label}</label>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <label style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.5rem 1rem', backgroundColor: 'white', color: '#3b82f6', borderRadius: '0.5rem', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)', textTransform: 'uppercase', border: '1px solid #3b82f6', cursor: 'pointer' }}>
+                <FaUpload style={{ marginRight: '0.5rem' }} />
+                <span style={{ fontSize: '1rem', lineHeight: '1.5' }}>Select a file</span>
+                <input type='file' name={name} style={{ display: 'none' }} onChange={onChange} accept={accept} />
+            </label>
+            {currentPath && (
+                <a href={`http://localhost:5000/${type}/${currentPath}`} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'underline', whiteSpace: 'nowrap' }}>
+                    View Current
+                </a>
+            )}
+        </div>
+    </div>
+);
 
 export default Profile;
