@@ -1,9 +1,9 @@
 INSERT INTO "Branch" (id, name) VALUES
-  (1, 'CSE'),
-  (2, 'ECE'),
-  (3, 'EEE'),
-  (4, 'MECH'),
-  (5, 'CIVIL'),
-  (6, 'CHEMICAL'),
-  (7, 'BIOTECH'),
+  (4, 'CSE'),
+  (6, 'ECE'),
+  (5, 'EEE'),
+  (7, 'MECH'),
+  (3, 'CIVIL'),
+  (2, 'CHEMICAL'),
+  (1, 'BIOTECH'),
   (8, 'MME');
