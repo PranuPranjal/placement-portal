@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import loginbg from '../assets/loginbg.webp'
 
 const LoginPage = () => {
   const [role, setRole] = useState('student');
@@ -43,7 +44,7 @@ const LoginPage = () => {
   // const token = localStorage.getItem('token');
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f7fafc' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundImage: `url(${loginbg})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
       <div className="card" style={{ width: 400 }}>
         <h2 className="text-2xl font-bold mb-8 text-center text-blue-800">Login</h2>
         <form onSubmit={handleLogin} className="space-y-6">

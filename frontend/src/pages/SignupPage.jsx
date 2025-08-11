@@ -41,7 +41,7 @@ const SignupPage = () => {
     try {
       const body = {
         name,
-        email: role === 'student' ? `${rollNumber}@student.nitandhra.ac.in` : `${email}@student.nitandhra.ac.in`,
+        email: role === 'student' ? `${rollNumber}@student.nitandhra.ac.in` : `${email}`,
         password,
         role,
         ...(role === 'student' ? { branchId, cgpa, rollNumber, registrationNumber } : {})
@@ -114,7 +114,7 @@ const SignupPage = () => {
                 <label>Email:</label>
                 <div className='flex items-center'>
                 <input value={email} onChange={e => setEmail(e.target.value)} required placeholder="Email" />
-                <span style={{ fontSize: 18, color: '#6b7280' }}>@student.nitandhra.ac.in</span>
+                <span style={{ fontSize: 18, color: '#6b7280' }}></span>
                 </div>
               </div>
             </>

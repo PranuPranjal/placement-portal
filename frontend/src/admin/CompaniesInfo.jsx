@@ -9,6 +9,8 @@ const CompaniesInfo = () => {
   console.log(applicants);
   const [showApplicants, setShowApplicants] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
+  const [isCompanyListVisible, setIsCompanyListVisible] = React.useState(true);
+
   React.useEffect(() => {
     const fetchCompanies = async () => {
       const token = localStorage.getItem('token');
@@ -40,6 +42,7 @@ const CompaniesInfo = () => {
       if (res.ok) {
         setApplicants(data);
         setShowApplicants(true);
+        setIsCompanyListVisible(false);
       } else {
         alert(data.error || 'Failed to fetch applicants');
       }
@@ -54,81 +57,86 @@ const CompaniesInfo = () => {
     setShowApplicants(false);
     setApplicants([]);
     setSelectedCompany(null);
+    setIsCompanyListVisible(true);
   };
   return (
-    <div className="bg-white rounded-xl shadow p-6">
-      <h3 className="text-lg font-semibold text-blue-700 mb-4">Companies Info</h3>
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-sm text-gray-700">
-          <thead>
-            <tr className="bg-blue-50">
-              <th className="px-4 py-2 text-left">Name</th>
-              <th className="px-4 py-2 text-left">Role</th>
-              <th className="px-4 py-2 text-left">Salary</th>
-              <th className="px-4 py-2 text-left">Deadline</th>
-              <th className="px-4 py-2 text-left">Description</th>
-              <th className="px-4 py-2 text-left">File</th>
-              <th className="px-4 py-2 text-left">Applicants</th>
-            </tr>
-          </thead>
-          <tbody>
-            {companies.map((c, i) => (
-              <tr key={i} className="border-b hover:bg-blue-50">
-                <td className="px-4 py-2 font-medium">{c.name}</td>
-                <td className="px-4 py-2">{c.role}</td>
-                <td className="px-4 py-2">{c.salary || c.ctc}</td>
-                <td className="px-4 py-2">
-                  {new Date(c.deadline).toLocaleString('en-IN', {
-                    year: 'numeric',
-                    month: 'short',
-                    day: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                  })}
-                </td>
-                <td className="px-4 py-2">{c.description}</td>
-                <td className="px-4 py-2">
-                  {c.filePath ? (
-                    <a 
-                      href={`http://localhost:5000/uploads/${c.filePath}`} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="text-blue-600 font-bold hover:text-blue-800"
-                    >
-                      Open <FaRegFolderOpen size={20} className="inline-block ml-1" />
-                    </a>
-                  ) : (
-                    <span className="text-gray-500">No file</span>
-                  )}
-                </td>
-                <td className="px-4 py-2">
-                  <button
-                    onClick={() => fetchApplicants(c.id, c.name)}
-                    disabled={loading}
-                    className="px-3 py-1 text-blue-600 font-bold rounded hover:text-blue-800 hover:cursor-pointer disabled:opacity-50"
-                  >
-                    {loading ? 'Loading...' : 'View'} <MdOutlineOpenInFull size={20} className="inline-block ml-1" />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+    <>
+    {isCompanyListVisible && (
+      <div className="bg-white rounded-xl shadow p-6">
+          <div>
+            <h3 className="text-lg font-semibold text-blue-700 mb-4">Companies Info</h3>
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-sm text-gray-700">
+                <thead>
+                  <tr className="bg-blue-50">
+                    <th className="px-4 py-2 text-left">Name</th>
+                    <th className="px-4 py-2 text-left">Role</th>
+                    <th className="px-4 py-2 text-left">Salary</th>
+                    <th className="px-4 py-2 text-left">Deadline</th>
+                    <th className="px-4 py-2 text-left">Description</th>
+                    <th className="px-4 py-2 text-left">File</th>
+                    <th className="px-4 py-2 text-left">Applicants</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {companies.map((c, i) => (
+                    <tr key={i} className="border-b">
+                      <td className="px-4 py-2 font-medium">{c.name}</td>
+                      <td className="px-4 py-2">{c.role}</td>
+                      <td className="px-4 py-2">{c.salary || c.ctc}</td>
+                      <td className="px-4 py-2">
+                        {new Date(c.deadline).toLocaleString('en-IN', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </td>
+                      <td className="px-4 py-2">{c.description}</td>
+                      <td className="px-4 py-2">
+                        {c.filePath ? (
+                          <a 
+                            href={`http://localhost:5000/uploads/${c.filePath}`} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-blue-600 font-bold hover:text-blue-800"
+                          >
+                            Open <FaRegFolderOpen size={20} className="inline-block ml-1" />
+                          </a>
+                        ) : (
+                          <span className="text-gray-500">No file</span>
+                        )}
+                      </td>
+                      <td className="px-4 py-2">
+                        <button
+                          onClick={() => fetchApplicants(c.id, c.name)}
+                          disabled={loading}
+                          className="px-3 py-1 text-blue-600 font-bold rounded hover:text-blue-800 hover:cursor-pointer disabled:opacity-50"
+                        >
+                          {loading ? 'Loading...' : 'View'} <MdOutlineOpenInFull size={20} className="inline-block ml-1" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
       </div>
-      
+      )}
       {/* Applicants Modal */}
       {showApplicants && (
-        <div className="modal-overlay modal-overlay-top">
-          <div className="modal-content modal-content--wide modal-content--no-scroll">
+        <div className="bg-white rounded-xl shadow p-6">
             <div className="flex justify-between items-center mb-4">
               <h4 className="text-lg font-semibold text-blue-700">
                 Applicants for {selectedCompany}
               </h4>
               <button
                 onClick={closeApplicants}
-                className="text-gray-500 size-20 hover:text-gray-700 hover:cursor-pointer text-xl"
+                className="text-white size-20 hover:text-red-500 hover:cursor-pointer text-xl"
               >
-                <MdOutlineCloseFullscreen size={20} className="inline-block ml-1" />
+                <MdOutlineCloseFullscreen size={30} className="inline-block ml-1" />
               </button>
             </div>
             
@@ -152,7 +160,7 @@ const CompaniesInfo = () => {
                   </thead>
                   <tbody>
                     {applicants.map((applicant, i) => (
-                      <tr key={i} className="border-b hover:bg-gray-50">
+                      <tr key={i} className="border-b">
                         <td className="px-4 py-2 font-medium">{applicant.name}</td>
                         <td className="px-4 py-2">{applicant.email}</td>
                         <td className="px-4 py-2">{applicant.branch}</td>
@@ -228,10 +236,9 @@ const CompaniesInfo = () => {
                 </table>
               </div>
             )}
-          </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
