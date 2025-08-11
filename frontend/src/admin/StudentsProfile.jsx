@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaUserCircle, FaFilePdf, FaIdCard, FaFileAlt, FaTimes } from 'react-icons/fa';
+import { MdOutlineOpenInFull, MdOutlineCloseFullscreen } from "react-icons/md";
 
 // A simple icon component for document links
 const DocumentIcon = () => (
@@ -101,9 +102,9 @@ const StudentsProfile = () => {
                 <td className="px-4 py-2">
                   <button
                     onClick={() => viewStudentProfile(s)}
-                    className="text-blue-600 hover:text-blue-800 font-semibold"
+                    className="text-blue-600 hover:text-blue-800 hover:cursor-pointer font-bold"
                   >
-                    View Profile
+                    View <MdOutlineOpenInFull size={20} className="inline-block ml-1" />
                   </button>
                 </td>
               </tr>
@@ -116,10 +117,10 @@ const StudentsProfile = () => {
 };
 
 const ProfileOverlay = ({ student, onClose }) => (
-    <div className="absolute inset-0 bg-white rounded-xl p-6 z-20" style={{ maxHeight: '95vh' }}>
+    <div className="absolute inset-0 bg-white rounded-xl p-6 z-20" style={{ maxHeight: '95vh', padding: '1.5rem', overflowY: 'auto' }}>
         <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xl font-bold text-gray-900">Student Profile</h3>
-            <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+            <h3 className="text-xl font-semibold text-blue-600">Student Profile</h3>
+            <button onClick={onClose} className="text-gray-400 hover:cursor-pointer hover:text-gray-600">
                 <FaTimes size={24} />
             </button>
         </div>
@@ -128,7 +129,7 @@ const ProfileOverlay = ({ student, onClose }) => (
 );
 
 const ProfileView = ({ student }) => (
-  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', padding: '1.5rem', backgroundColor: '#f9fafb', borderRadius: '0.5rem' }}>
     <div style={{ padding: '1.5rem', backgroundColor: '#f9fafb', borderRadius: '0.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
         {student.photoPath ? (
             <img

@@ -35,7 +35,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, handleLogout, role }) => {
   return (
     <aside
       className={`fixed left-0 top-[5.5rem] h-[calc(100vh-5rem)] 
-      overflow-y-auto overflow-x-hidden bg-gray-800 shadow-lg z-30 flex flex-col justify-between
+      overflow-y-auto overflow-x-hidden bg-gray-800 shadow-lg z-60 flex flex-col justify-between
       transition-all duration-300
       ${isCollapsed ? 'w-20' : 'w-64'}`}
     >
@@ -43,9 +43,9 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, handleLogout, role }) => {
       <div className="flex items-center justify-center px-3 py-2 border-b">
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="bg-blue-600 text-white p-1 shadow-md hover:bg-blue-700"
+          className="bg-red-600 text-white p-1 shadow-md hover:bg-red-700 hover:size={40} hover:cursor-pointer"
         >
-          {isCollapsed ? <FiMenu size={30} /> : <TbLayoutSidebarLeftCollapse size={30} />}
+          {isCollapsed ? <FiMenu size={30} /> : <TbLayoutSidebarLeftCollapse size={40} />}
         </button>
       </div>
 
@@ -59,8 +59,8 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, handleLogout, role }) => {
                 className={`block px-3 py-2 rounded-lg font-medium transition-colors duration-200
                   ${isCollapsed ? 'flex items-center justify-center' : ''}
                   ${isActive(item.path)
-                    ? 'bg-blue-600 !text-white shadow-md'
-                    : '!text-white hover:!text-blue-500'}
+                    ? 'bg-white !text-black shadow-md'
+                    : '!text-white hover:!text-white hover:!bg-red-700'}
                 `}
               >
                 {isCollapsed ? React.cloneElement(item.icon, { className: 'text-inherit' }) : item.label}
@@ -74,7 +74,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed, handleLogout, role }) => {
       <div className="px-2 mt-auto mb-24" style={{ paddingBottom: '1rem' }}>
         <button
           onClick={handleLogout}
-          className={`w-full px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium ${isCollapsed ? 'flex items-center justify-center' : ''}`}
+          className={`w-full px-3 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 hover:cursor-pointer font-medium ${isCollapsed ? 'flex items-center justify-center' : ''}`}
         >
           {isCollapsed ? <ImExit size={30}/> : 'Logout'}
         </button>

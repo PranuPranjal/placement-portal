@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 
 const LoginPage = () => {
   const [role, setRole] = useState('student');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('pranupranjal850@gmail.com');
+  const [password, setPassword] = useState('123');
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -69,7 +69,7 @@ const LoginPage = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg shadow-md transition-colors"
+            className="w-full bg-blue-600 hover:bg-blue-700 hover:cursor-pointer text-white font-semibold py-2 rounded-lg shadow-md transition-colors"
           >
             Login
           </button>

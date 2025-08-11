@@ -132,7 +132,11 @@ const SignupPage = () => {
             </>
           )}
           {error && <div className="text-center" style={{ color: 'red', marginBottom: 8 }}>{error}</div>}
-          <button type="submit" className="btn" disabled={loading} style={{ width: '100%' }}>
+          <button 
+          type="submit" 
+          className="w-full bg-blue-600 hover:bg-blue-700 hover:cursor-pointer text-white font-semibold py-2 rounded-lg shadow-md transition-colors"
+          disabled={loading}
+          >
             {loading ? 'Signing up...' : 'Sign Up'}
           </button>
         </form>

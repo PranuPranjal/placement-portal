@@ -1,4 +1,6 @@
 import React from 'react';
+import { FaRegFolderOpen} from 'react-icons/fa';
+import { MdOutlineOpenInFull, MdOutlineCloseFullscreen } from "react-icons/md";
 
 const CompaniesInfo = () => {
   const [companies, setCompanies] = React.useState([]);
@@ -91,9 +93,9 @@ const CompaniesInfo = () => {
                       href={`http://localhost:5000/uploads/${c.filePath}`} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-800 underline"
+                      className="text-blue-600 font-bold hover:text-blue-800"
                     >
-                      View
+                      Open <FaRegFolderOpen size={20} className="inline-block ml-1" />
                     </a>
                   ) : (
                     <span className="text-gray-500">No file</span>
@@ -103,9 +105,9 @@ const CompaniesInfo = () => {
                   <button
                     onClick={() => fetchApplicants(c.id, c.name)}
                     disabled={loading}
-                    className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 disabled:opacity-50"
+                    className="px-3 py-1 text-blue-600 font-bold rounded hover:text-blue-800 hover:cursor-pointer disabled:opacity-50"
                   >
-                    {loading ? 'Loading...' : 'View Applicants'}
+                    {loading ? 'Loading...' : 'View'} <MdOutlineOpenInFull size={20} className="inline-block ml-1" />
                   </button>
                 </td>
               </tr>
@@ -124,9 +126,9 @@ const CompaniesInfo = () => {
               </h4>
               <button
                 onClick={closeApplicants}
-                className="text-gray-500 hover:text-gray-700 text-xl"
+                className="text-gray-500 size-20 hover:text-gray-700 hover:cursor-pointer text-xl"
               >
-                ×
+                <MdOutlineCloseFullscreen size={20} className="inline-block ml-1" />
               </button>
             </div>
             
@@ -161,9 +163,9 @@ const CompaniesInfo = () => {
                               href={`http://localhost:5000/uploadcv/${applicant.cvPath}`} 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className="text-blue-600 hover:text-blue-800 underline"
+                              className="text-blue-600 font-bold hover:text-blue-800"
                             >
-                              View CV
+                              View <FaRegFolderOpen size={20} className="inline-block ml-1" />
                             </a>
                           ) : (
                             <span className="text-gray-500">No CV</span>
@@ -175,9 +177,9 @@ const CompaniesInfo = () => {
                               href={`http://localhost:5000/uploadugmarks/${applicant.ugMarksheetPath}`} 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className="text-blue-600 hover:text-blue-800 underline"
+                              className="text-blue-600 hover:text-blue-800 font-bold"
                             >
-                              View UG Marksheet
+                              View <FaRegFolderOpen size={20} className="inline-block ml-1" />
                             </a>
                           ) : (
                             <span className="text-gray-500">No UG Marksheet</span>
@@ -189,9 +191,9 @@ const CompaniesInfo = () => {
                               href={`http://localhost:5000/uploadxiimarks/${applicant.xiiMarksheetPath}`} 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className="text-blue-600 hover:text-blue-800 underline"
+                              className="text-blue-600 hover:text-blue-800 font-bold"
                             >
-                              View XII Marksheet
+                              View <FaRegFolderOpen size={20} className="inline-block ml-1" />
                             </a>
                           ) : (
                             <span className="text-gray-500">No XII Marksheet</span>
@@ -203,9 +205,9 @@ const CompaniesInfo = () => {
                               href={`http://localhost:5000/uploadxmarks/${applicant.xMarksheetPath}`} 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className="text-blue-600 hover:text-blue-800 underline"
+                              className="text-blue-600 hover:text-blue-800 font-bold"
                             >
-                              View X Marksheet
+                              View <FaRegFolderOpen size={20} className="inline-block ml-1" />
                             </a>
                           ) : (
                             <span className="text-gray-500">No X Marksheet</span>

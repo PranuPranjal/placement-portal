@@ -75,7 +75,7 @@ const AddCompany = () => {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow p-6 max-w-3xl mx-auto" style={{ marginLeft: '17rem'}}>
+    <div className="bg-white rounded-xl shadow p-6 max-w-3xl mx-auto" style={{ marginLeft: '15rem'}}>
       <h3 className="text-lg font-semibold text-blue-700 mb-6">Add New Company</h3>
 
       {/* Allowed Branches */}
@@ -264,7 +264,7 @@ const AddCompany = () => {
 
         <button 
           type="submit" 
-          className="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2.5 rounded-lg shadow-md transition-colors w-fit"
+          className="inline-flex items-center bg-blue-600 hover:cursor-pointer hover:bg-blue-700 text-white font-semibold px-4 py-2.5 rounded-lg shadow-md transition-colors w-fit"
         >
           Add Company
         </button>

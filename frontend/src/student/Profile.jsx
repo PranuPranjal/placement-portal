@@ -116,8 +116,9 @@ const ProfileView = ({ student, onEdit }) => (
             </div>
         </div>
         <button
+            className='hover:cursor-pointer hover:bg-blue-800'
             onClick={onEdit}
-            style={{ position: 'absolute', top: '1.5rem', right: '1.5rem', backgroundColor: '#3b82f6', color: 'white', paddingTop: '0.5rem', paddingBottom: '0.5rem', paddingLeft: '1rem', paddingRight: '1rem', borderRadius: '9999px', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+            style={{hover: 'cursor-pointer', position: 'absolute', top: '1.5rem', right: '1.5rem', backgroundColor: '#3b82f6', color: 'white', paddingTop: '0.5rem', paddingBottom: '0.5rem', paddingLeft: '1rem', paddingRight: '1rem', borderRadius: '9999px', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
         >
             <FaEdit />
             <span>Edit Profile</span>
@@ -264,8 +265,8 @@ const ProfileForm = ({ student, branches, onCancel, onSave }) => {
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
-                <button type="button" onClick={onCancel} style={{ paddingTop: '0.5rem', paddingBottom: '0.5rem', paddingLeft: '1.5rem', paddingRight: '1.5rem', backgroundColor: '#e5e7eb', color: '#1f2937', borderRadius: '9999px' }}>Cancel</button>
-                <button type="submit" disabled={loading} style={{ paddingTop: '0.5rem', paddingBottom: '0.5rem', paddingLeft: '1.5rem', paddingRight: '1.5rem', backgroundColor: '#3b82f6', color: 'white', borderRadius: '9999px' }}>
+                <button className='hover:cursor-pointer hover:bg-blue-800' type="button" onClick={onCancel} style={{ paddingTop: '0.5rem', paddingBottom: '0.5rem', paddingLeft: '1.5rem', paddingRight: '1.5rem', backgroundColor: '#e5e7eb', color: '#1f2937', borderRadius: '9999px' }}>Cancel</button>
+                <button className='hover:cursor-pointer hover:bg-blue-800' type="submit" disabled={loading} style={{ paddingTop: '0.5rem', paddingBottom: '0.5rem', paddingLeft: '1.5rem', paddingRight: '1.5rem', backgroundColor: '#3b82f6', color: 'white', borderRadius: '9999px' }}>
                     {loading ? 'Saving...' : 'Save Changes'}
                 </button>
             </div>

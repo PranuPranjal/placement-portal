@@ -1,4 +1,5 @@
 import React from 'react';
+import { FaFilePdf } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
 const EligibleCompanies = () => {
@@ -226,9 +227,9 @@ const EligibleCompanies = () => {
                       href={`http://localhost:5000/uploads/${c.filePath}`} 
                       target="_blank" 
                       rel="noopener noreferrer"
-                      className="text-blue-600 hover:text-blue-800 underline"
+                      className="text-blue-600 hover:text-blue-800 font-bold"
                     >
-                      View
+                      View <FaFilePdf className="inline-block ml-1" />
                     </a>
                   ) : (
                     <span className="text-gray-500">No file</span>
@@ -240,7 +241,7 @@ const EligibleCompanies = () => {
                   ) : (
                     <button
                       onClick={() => openApplicationModal(c)}
-                      className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                      className="px-3 py-1 bg-blue-600 text-white rounded w-12 h-8 hover:cursor-pointer hover:bg-blue-700"
                     >
                       Apply
                     </button>
