@@ -31,7 +31,7 @@ const AppliedCompanies = () => {
           </thead>
           <tbody>
             {applied.map((c, i) => (
-              <tr key={i} className="border-b hover:bg-blue-50">
+              <tr key={i} className="border-b">
                 <td className="px-4 py-2 font-medium">{c.name}</td>
                 <td className="px-4 py-2">{c.role}</td>
                 <td className="px-4 py-2">{c.salary || c.ctc}</td>

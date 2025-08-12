@@ -95,8 +95,8 @@ const Profile = () => {
 };
 
 const ProfileView = ({ student, onEdit }) => (
-  <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-    <div style={{ padding: '2rem', backgroundColor: 'white', borderRadius: '1rem', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)', position: 'relative' }}>
+  <div className='bg-white rounded-xl shadow p-6'>
+    <div style={{ padding: '2rem', borderRadius: '1rem', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)', position: 'relative' }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             {student.photoPath ? (
                 <img
@@ -108,7 +108,7 @@ const ProfileView = ({ student, onEdit }) => (
                 <FaUserCircle style={{ width: '8rem', height: '8rem', color: '#d1d5db' }} />
             )}
             <div style={{ marginTop: '1.5rem', textAlign: 'center' }}>
-                <h1 style={{ fontSize: '2.25rem', fontWeight: 'bold', color: '#1f2937' }}>{student.name || 'Your Name'}</h1>
+                <h1 style={{ fontSize: '2.25rem', fontWeight: 'bold', color: '#fff' }}>{student.name || 'Your Name'}</h1>
                 <p style={{ fontSize: '1.125rem', color: '#6b7280', marginTop: '0.25rem' }}>{student.email}</p>
                 <p style={{ fontSize: '1rem', color: '#3b82f6', fontWeight: '600', marginTop: '0.5rem' }}>
                     {student.branch ? student.branch.name : 'Branch'} • CGPA: {student.cgpa ?? '-'}
@@ -126,48 +126,48 @@ const ProfileView = ({ student, onEdit }) => (
     </div>
 
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-        <div style={{ padding: '2rem', backgroundColor: 'white', borderRadius: '1rem', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)' }}>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1.5rem' }}>Personal Details</h2>
+        <div style={{ padding: '2rem', borderRadius: '1rem', border: '1px solid #272829ff', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#3b82f6', marginBottom: '1.5rem' }}>Personal Details</h2>
             <ul style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '1.125rem' }}>
                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ fontWeight: '600', color: '#4b5563' }}>Name:</span>
-                    <span>{student.name || '-'}</span>
+                    <span style={{ fontWeight: '600', color: '#fff' }}>Name:</span>
+                    <span style={{ color: '#3b82f6' }}>{student.name || '-'}</span>
                 </li>
                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ fontWeight: '600', color: '#4b5563' }}>Email:</span>
-                    <span>{student.email || '-'}</span>
+                    <span style={{ fontWeight: '600', color: '#fff' }}>Email:</span>
+                    <span style={{ color: '#3b82f6' }}>{student.email || '-'}</span>
                 </li>
                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ fontWeight: '600', color: '#4b5563' }}>Branch:</span>
-                    <span>{student.branch ? student.branch.name : '-'}</span>
+                    <span style={{ fontWeight: '600', color: '#fff' }}>Branch:</span>
+                    <span style={{ color: '#3b82f6' }}>{student.branch ? student.branch.name : '-'}</span>
                 </li>
             </ul>
         </div>
-        <div style={{ padding: '2rem', backgroundColor: 'white', borderRadius: '1rem', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)' }}>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1.5rem' }}>Academic Details</h2>
+        <div style={{ padding: '2rem', borderRadius: '1rem', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)' }}>
+            <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#3b82f6', marginBottom: '1.5rem' }}>Academic Details</h2>
             <ul style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '1.125rem' }}>
                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ fontWeight: '600', color: '#4b5563' }}>CGPA:</span>
-                    <span>{student.cgpa ?? '-'}</span>
+                    <span style={{ fontWeight: '600', color: '#fff' }}>CGPA:</span>
+                    <span style={{ color: '#3b82f6' }}>{student.cgpa ?? '-'}</span>
                 </li>
                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ fontWeight: '600', color: '#4b5563' }}>X %:</span>
-                    <span>{student.XPercentage ?? '-'}</span>
+                    <span style={{ fontWeight: '600', color: '#fff' }}>X %:</span>
+                    <span style={{ color: '#3b82f6' }}>{student.XPercentage ?? '-'}</span>
                 </li>
                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ fontWeight: '600', color: '#4b5563' }}>XII %:</span>
-                    <span>{student.XIIPercentage ?? '-'}</span>
+                    <span style={{ fontWeight: '600', color: '#fff' }}>XII %:</span>
+                    <span style={{ color: '#3b82f6' }}>{student.XIIPercentage ?? '-'}</span>
                 </li>
                  <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ fontWeight: '600', color: '#4b5563' }}>Roll / Reg:</span>
-                  <span>{student.rollNumber || '-'} / {student.registrationNumber || '-'}</span>
+                  <span style={{ fontWeight: '600', color: '#fff' }}>Roll / Reg:</span>
+                  <span style={{ color: '#3b82f6' }}>{student.rollNumber || '-'} / {student.registrationNumber || '-'}</span>
                 </li>
             </ul>
         </div>
     </div>
 
-    <div style={{ padding: '2rem', backgroundColor: 'white', borderRadius: '1rem', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)' }}>
-        <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1.5rem' }}>Documents</h2>
+    <div style={{ padding: '2rem', borderRadius: '1rem', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)' }}>
+        <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#3b82f6', marginBottom: '1.5rem' }}>Documents</h2>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
             <DocumentItem icon={<FaFilePdf style={{ color: '#ef4444', fontSize: '1.5rem' }} />} label="CV" path={student.cvPath} type="uploadcv" />
             <DocumentItem icon={<FaIdCard style={{ color: '#6366f1', fontSize: '1.5rem' }} />} label="Aadhar" path={student.aadharPath} type="uploadaadhar" />
@@ -234,33 +234,140 @@ const ProfileForm = ({ student, branches, onCancel, onSave }) => {
 
     return (
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            <div style={{ padding: '2rem', backgroundColor: 'white', borderRadius: '1rem', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)' }}>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1.5rem' }}>Edit Personal Information</h2>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
-                    <InputField label="Name" name="name" value={formData.name} onChange={handleChange} />
-                    <InputField label="Email" name="email" value={student.email} disabled />
-                    <SelectField label="Branch" name="branchId" value={formData.branchId} onChange={handleChange} options={branches} />
+            <div className='bg-white rounded-xl shadow p-6' style={{ padding: '2rem', borderRadius: '1rem', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)' }}>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#3b82f6', marginBottom: '1.5rem' }}>Edit Personal Information</h2>
+                <div style={{ color: 'white', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
+                    <div>
+                        <label className='text-white'>Name</label>
+                        <InputField name="name" value={formData.name} onChange={handleChange} />
+                    </div>
+                    <div>
+                        <label className='text-white'>Email</label>
+                        <InputField name="email" value={student.email} disabled />
+                    </div>
+                    <div>
+  <label className="text-white">Branch</label>
+  <select
+    name="branchId"
+    value={formData.branchId}
+    onChange={handleChange}
+    className="w-full p-2 rounded bg-gray-800 text-white"
+  >
+    {branches.map(branch => (
+      <option key={branch.id} value={branch.id}>
+        {branch.name}
+      </option>
+    ))}
+  </select>
+</div>
                 </div>
             </div>
 
-            <div style={{ padding: '2rem', backgroundColor: 'white', borderRadius: '1rem', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)' }}>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1.5rem' }}>Edit Academic Information</h2>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.5rem' }}>
-                    <InputField label="CGPA" name="cgpa" type="number" value={formData.cgpa} onChange={handleChange} />
-                    <InputField label="X Percentage" name="XPercentage" type="number" value={formData.XPercentage} onChange={handleChange} />
-                    <InputField label="XII Percentage" name="XIIPercentage" type="number" value={formData.XIIPercentage} onChange={handleChange} />
+            <div className='bg-white rounded-xl shadow p-6' style={{ padding: '2rem', borderRadius: '1rem', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)' }}>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#3b82f6', marginBottom: '1.5rem' }}>Edit Academic Information</h2>
+                <div
+                    style={{
+                        color: 'white',
+                        display: 'grid',
+                        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+                        gap: '1.5rem'
+                    }}
+                    >
+                    <div>
+                        <label className="text-white">CGPA</label>
+                        <InputField
+                        name="cgpa"
+                        type="number"
+                        value={formData.cgpa}
+                        onChange={handleChange}
+                        />
+                    </div>
+
+                    <div>
+                        <label className="text-white">X Percentage</label>
+                        <InputField
+                        name="XPercentage"
+                        type="number"
+                        value={formData.XPercentage}
+                        onChange={handleChange}
+                        />
+                    </div>
+
+                    <div>
+                        <label className="text-white">XII Percentage</label>
+                        <InputField
+                        name="XIIPercentage"
+                        type="number"
+                        value={formData.XIIPercentage}
+                        onChange={handleChange}
+                        />
+                    </div>
                 </div>
             </div>
 
-            <div style={{ padding: '2rem', backgroundColor: 'white', borderRadius: '1rem', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)' }}>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1.5rem' }}>Upload Documents</h2>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
-                    <FileInputField label="CV" name="cv" onChange={handleFileChange} currentPath={student.cvPath} type="uploadcv" />
-                    <FileInputField label="Photo" name="photo" onChange={handleFileChange} currentPath={student.photoPath} type="uploadphoto" accept="image/*" />
-                    <FileInputField label="Aadhar" name="aadhar" onChange={handleFileChange} currentPath={student.aadharPath} type="uploadaadhar" />
-                    <FileInputField label="UG Marksheet" name="ugMarksheet" onChange={handleFileChange} currentPath={student.ugMarksheetPath} type="uploadugmarks" />
-                    <FileInputField label="X Marksheet" name="xMarksheet" onChange={handleFileChange} currentPath={student.xMarksheetPath} type="uploadxmarks" />
-                    <FileInputField label="XII Marksheet" name="xiiMarksheet" onChange={handleFileChange} currentPath={student.xiiMarksheetPath} type="uploadxiimarks" />
+            <div className='bg-white rounded-xl shadow p-6' style={{ padding: '2rem', borderRadius: '1rem', boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)' }}>
+                <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#3b82f6', marginBottom: '1.5rem' }}>Upload Documents</h2>
+                <div style={{ color: 'white', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
+                    <div>
+                        <label className="text-white">CV</label>
+                        <FileInputField
+                        name="cv"
+                        onChange={handleFileChange}
+                        currentPath={student.cvPath}
+                        type="uploadcv"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="text-white">Photo</label>
+                        <FileInputField
+                        name="photo"
+                        onChange={handleFileChange}
+                        currentPath={student.photoPath}
+                        type="uploadphoto"
+                        accept="image/*"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="text-white">Aadhar</label>
+                        <FileInputField
+                        name="aadhar"
+                        onChange={handleFileChange}
+                        currentPath={student.aadharPath}
+                        type="uploadaadhar"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="text-white">UG Marksheet</label>
+                        <FileInputField
+                        name="ugMarksheet"
+                        onChange={handleFileChange}
+                        currentPath={student.ugMarksheetPath}
+                        type="uploadugmarks"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="text-white">X Marksheet</label>
+                        <FileInputField
+                        name="xMarksheet"
+                        onChange={handleFileChange}
+                        currentPath={student.xMarksheetPath}
+                        type="uploadxmarks"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="text-white">XII Marksheet</label>
+                        <FileInputField
+                        name="xiiMarksheet"
+                        onChange={handleFileChange}
+                        currentPath={student.xiiMarksheetPath}
+                        type="uploadxiimarks"
+                        />
+                    </div>                
                 </div>
             </div>
 
