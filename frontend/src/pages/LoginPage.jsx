@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import loginbg from '../assets/loginbg.webp'
+import loginbg from '../assets/dark2.png'
 
 const LoginPage = () => {
   const [role, setRole] = useState('student');
@@ -49,7 +49,7 @@ const LoginPage = () => {
         <h2 className="text-2xl font-bold mb-8 text-center text-blue-800">Login</h2>
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label className="block text-sm font-medium text-blue-500 mb-1">Email</label>
             <input
               type="email"
               value={email}
@@ -59,7 +59,7 @@ const LoginPage = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <label className="block text-sm font-medium text-blue-500 mb-1">Password</label>
             <input
               type="password"
               value={password}
@@ -75,7 +75,7 @@ const LoginPage = () => {
             Login
           </button>
         </form>
-        <div style={{ textAlign: 'center', marginTop: 16 }}>
+        <div style={{ textAlign: 'center', marginTop: 16, color: 'white'}}>
           Don't have an account?{' '}
           <a href="/signup" style={{ color: '#2563eb', textDecoration: 'underline' }}>Sign up</a>
         </div>

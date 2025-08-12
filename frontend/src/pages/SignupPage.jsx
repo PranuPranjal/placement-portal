@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import bg from '../assets/dark2.png'
 
 const SignupPage = () => {
   const [role, setRole] = useState('student');
@@ -65,42 +66,42 @@ const SignupPage = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f7fafc' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundImage: `url(${bg})`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat', backgroundAttachment: 'fixed' }}>
       <div className="card" style={{ width: 400 }}>
-        <h2 style={{ textAlign: 'center', color: '#2563eb', marginBottom: 24 }}>Sign Up</h2>
+        <h1 style={{ fontSize: '2rem', fontWeight: 'bold', textAlign: 'center', color: '#2563eb', marginBottom: 24 }}>Sign Up</h1>
         <form onSubmit={handleSignup}>
           <div style={{ marginBottom: 16 }}>
-            <label style={{ fontWeight: 500 }}>Role:</label>
+            <label className='text-blue-500' style={{ fontWeight: 500 }}>Role:</label>
             <select value={role} onChange={e => setRole(e.target.value)} required>
-              <option value="student">Student</option>
-              <option value="admin">Admin</option>
+              <option className='bg-blue-900' value="student">Student</option>
+              <option className='bg-blue-900' value="admin">Admin</option>
             </select>
           </div>
           <div style={{ marginBottom: 16 }}>
-            <label>Name:</label>
+            <label className='text-blue-500'>Name:</label>
             <input value={name} onChange={e => setName(e.target.value)} required placeholder="Full Name" />
           </div>
           {role === 'student' && (
             <>
               <div style={{ marginBottom: 16 }}>
-                <label>Branch:</label>
+                <label className='text-blue-500'>Branch:</label>
                 <select value={branchId} onChange={e => setBranchId(e.target.value)} required>
-                  <option value="">Select Branch</option>
+                  <option className='bg-blue-900' value="">Select Branch</option>
                   {branches.map(branch => (
-                    <option key={branch.id} value={branch.id}>{branch.name}</option>
+                    <option className='bg-blue-900' key={branch.id} value={branch.id}>{branch.name}</option>
                   ))}
                 </select>
               </div>
               <div style={{ marginBottom: 16 }}>
-                <label>Registration Number:</label>
+                <label className='text-blue-500'>Registration Number:</label>
                 <input value={registrationNumber} onChange={e => setRegistrationNumber(e.target.value)} required placeholder="Registration Number" />
               </div>
               <div style={{ marginBottom: 16 }}>
-                <label>Roll Number:</label>
+                <label className='text-blue-500'>Roll Number:</label>
                 <input value={rollNumber} onChange={e => setRollNumber(e.target.value)} required placeholder="Roll Number" />
               </div>
               <div style={{ marginBottom: 16 }}>
-                <label>Email:</label>
+                <label className='text-blue-500'>Email:</label>
                 <div className='flex items-center'>
                 <input value={rollNumber} onChange={e => setEmail(e.target.value)} required placeholder="Email" />
                 <span style={{ fontSize: 18, color: '#6b7280' }}>@student.nitandhra.ac.in</span>
@@ -111,7 +112,7 @@ const SignupPage = () => {
           {role !== 'student' && (
             <>
               <div style={{ marginBottom: 16 }}>
-                <label>Email:</label>
+                <label className='text-blue-500'>Email:</label>
                 <div className='flex items-center'>
                 <input value={email} onChange={e => setEmail(e.target.value)} required placeholder="Email" />
                 <span style={{ fontSize: 18, color: '#6b7280' }}></span>
@@ -120,13 +121,13 @@ const SignupPage = () => {
             </>
           )}
           <div style={{ marginBottom: 16 }}>
-            <label>Password:</label>
+            <label className='text-blue-500'>Password:</label>
             <input type="password" value={password} onChange={e => setPassword(e.target.value)} required placeholder="Password" />
           </div>
           {role === 'student' && (
             <>
               <div style={{ marginBottom: 16 }}>
-                <label>CGPA:</label>
+                <label className='text-blue-500'>CGPA:</label>
                 <input type="number" step="0.01" value={cgpa} onChange={e => setCgpa(e.target.value)} required placeholder="CGPA" min="0" max="10" />
               </div>
             </>
@@ -140,7 +141,7 @@ const SignupPage = () => {
             {loading ? 'Signing up...' : 'Sign Up'}
           </button>
         </form>
-        <div style={{ textAlign: 'center', marginTop: 16 }}>
+        <div style={{ textAlign: 'center', marginTop: 16, color: 'white' }}>
           Already have an account? <a href="/login" style={{ color: '#2563eb', textDecoration: 'underline' }}>Login</a>
         </div>
       </div>

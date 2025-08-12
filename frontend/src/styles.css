@@ -173,22 +173,22 @@ body {
 
 .card,
 .bg-white.rounded-xl.shadow.p-6 {
-  background: rgba(255, 255, 255, 0.15); /* very transparent */
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(16px); /* Safari support */
+  background: rgba(255, 255, 255, 0.068); /* very transparent */
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(10px); /* Safari support */
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-xl);
 }
 
-table {
+/* table {
   background: rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-lg);
-}
+} */
 
 
 .bg-white.rounded-xl.shadow.p-6:hover, .card:hover {
@@ -267,7 +267,8 @@ input:not([type="checkbox"]):not([type="radio"]), select, textarea {
   margin-bottom: 1rem; 
   outline: none; 
   transition: all 0.2s ease;
-  background: rgba(255, 255, 255, 0.9);
+  background: 'transparent';
+  color: white;
   backdrop-filter: blur(10px);
 }
 
@@ -278,12 +279,15 @@ input[type="radio"] {
   height: auto;
   margin-bottom: 0;
   padding: 0;
+  background: 'transparent';
+  color: white;;
 }
 
 input:focus, select:focus, textarea:focus { 
   border-color: var(--primary-500);
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
   transform: translateY(-1px);
+  background: 'transparent';
 }
 
 /* Table Styles */

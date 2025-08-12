@@ -77,10 +77,11 @@ const AddCompany = () => {
   return (
     <div className="bg-white rounded-xl shadow p-6 max-w-3xl mx-auto" style={{ marginLeft: '15rem'}}>
       <h3 className="text-lg font-semibold text-blue-700 mb-6">Add New Company</h3>
+      <br />
 
       {/* Allowed Branches */}
-      <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+      <div className="mb-6 mt-6">
+        <label className="block text-sm font-medium text-blue-500 mb-2 mt-2">
           Allowed Branches
         </label>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
@@ -93,7 +94,7 @@ const AddCompany = () => {
                 className={`flex items-center cursor-pointer rounded-lg px-3 py-2 border-2 transition-all duration-200 hover:shadow-sm ${
                   checked
                     ? 'bg-blue-50 border-blue-200 text-blue-800'
-                    : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'
+                    : 'border-gray-200 text-white hover:border-gray-300'
                 }`}
                 style={{ fontSize: '1.05rem' }}
               >
@@ -125,7 +126,7 @@ const AddCompany = () => {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+            <label className="block text-sm font-medium text-blue-500 mb-1">Company Name</label>
             <input 
               placeholder="Name of the company"
               value={name}
@@ -136,7 +137,7 @@ const AddCompany = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <label className="block text-sm font-medium text-blue-500 mb-1">Password</label>
             <input 
               type="password"
               placeholder="Set company login password"
@@ -150,7 +151,7 @@ const AddCompany = () => {
 
         {/* Roles */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Roles</label>
+          <label className="block text-sm font-medium text-blue-500 mb-2">Roles</label>
           <div className="space-y-2">
             {role.map((r, index) => (
               <div key={index} style={{ display: 'flex', alignItems: 'stretch', gap: '8px' }}>
@@ -205,7 +206,7 @@ const AddCompany = () => {
         <br />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">CGPA Criteria</label>
+            <label className="block text-sm font-medium text-blue-500 mb-1">CGPA Criteria</label>
             <input 
               type="number" step="0.01" min="0" max="10"
               placeholder="Minimum CGPA Required"
@@ -216,7 +217,7 @@ const AddCompany = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">CTC</label>
+            <label className="block text-sm font-medium text-blue-500 mb-1">CTC</label>
             <input 
               type="number" step="0.01" min="0"
               placeholder="CTC in LPA"
@@ -230,7 +231,7 @@ const AddCompany = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Deadline</label>
+            <label className="block text-sm font-medium text-blue-500 mb-1">Deadline</label>
             <input 
               type='datetime-local' 
               value={deadline}
@@ -240,7 +241,7 @@ const AddCompany = () => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Company File (Optional)</label>
+            <label className="block text-sm font-medium text-blue-500 mb-1">Company File (Optional)</label>
             <input 
               type="file" 
               onChange={e => setFile(e.target.files[0])} 
@@ -251,7 +252,7 @@ const AddCompany = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+          <label className="block text-sm font-medium text-blue-500 mb-1">Description</label>
           <textarea 
             rows={4}
             placeholder="Brief job description, responsibilities, requirements..."

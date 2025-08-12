@@ -100,19 +100,19 @@ const CompaniesInfo = () => {
                             href={`http://localhost:5000/uploads/${c.filePath}`} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="text-blue-600 font-bold hover:text-blue-800"
+                            className="text-blue-200 font-bold hover:text-blue-400"
                           >
                             Open <FaRegFolderOpen size={20} className="inline-block ml-1" />
                           </a>
                         ) : (
-                          <span className="text-gray-500">No file</span>
+                          <span className="text-white-500">No file</span>
                         )}
                       </td>
                       <td className="px-4 py-2">
                         <button
                           onClick={() => fetchApplicants(c.id, c.name)}
                           disabled={loading}
-                          className="px-3 py-1 text-blue-600 font-bold rounded hover:text-blue-800 hover:cursor-pointer disabled:opacity-50"
+                          className="px-3 py-1 text-blue-200 font-bold rounded hover:text-blue-400 hover:cursor-pointer disabled:opacity-50"
                         >
                           {loading ? 'Loading...' : 'View'} <MdOutlineOpenInFull size={20} className="inline-block ml-1" />
                         </button>
@@ -171,12 +171,12 @@ const CompaniesInfo = () => {
                               href={`http://localhost:5000/uploadcv/${applicant.cvPath}`} 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className="text-blue-600 font-bold hover:text-blue-800"
+                              className="text-blue-200 font-bold hover:text-blue-400"
                             >
                               View <FaRegFolderOpen size={20} className="inline-block ml-1" />
                             </a>
                           ) : (
-                            <span className="text-gray-500">No CV</span>
+                            <span className="text-gray-200">No CV</span>
                           )}
                         </td> 
                         <td className="px-4 py-2">
@@ -185,12 +185,12 @@ const CompaniesInfo = () => {
                               href={`http://localhost:5000/uploadugmarks/${applicant.ugMarksheetPath}`} 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className="text-blue-600 hover:text-blue-800 font-bold"
+                              className="text-blue-200 hover:text-blue-400 font-bold"
                             >
                               View <FaRegFolderOpen size={20} className="inline-block ml-1" />
                             </a>
                           ) : (
-                            <span className="text-gray-500">No UG Marksheet</span>
+                            <span className="text-white-500">No UG Marksheet</span>
                           )}
                         </td>
                         <td className="px-4 py-2">
@@ -199,12 +199,12 @@ const CompaniesInfo = () => {
                               href={`http://localhost:5000/uploadxiimarks/${applicant.xiiMarksheetPath}`} 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className="text-blue-600 hover:text-blue-800 font-bold"
+                              className="text-blue-200 hover:text-blue-400 font-bold"
                             >
                               View <FaRegFolderOpen size={20} className="inline-block ml-1" />
                             </a>
                           ) : (
-                            <span className="text-gray-500">No XII Marksheet</span>
+                            <span className="text-white-500">No XII Marksheet</span>
                           )}
                         </td>
                         <td className="px-4 py-2">
@@ -213,12 +213,12 @@ const CompaniesInfo = () => {
                               href={`http://localhost:5000/uploadxmarks/${applicant.xMarksheetPath}`} 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className="text-blue-600 hover:text-blue-800 font-bold"
+                              className="text-blue-200 hover:text-blue-400 font-bold"
                             >
                               View <FaRegFolderOpen size={20} className="inline-block ml-1" />
                             </a>
                           ) : (
-                            <span className="text-gray-500">No X Marksheet</span>
+                            <span className="text-white-500">No X Marksheet</span>
                           )}
                         </td>
                         <td className="px-4 py-2">

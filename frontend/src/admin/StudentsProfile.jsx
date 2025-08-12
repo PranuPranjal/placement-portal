@@ -78,15 +78,15 @@ const StudentsProfile = () => {
         <div>
           <h3 className="text-lg font-semibold text-blue-700 mb-4">Students Profile</h3>
           <div className="mb-4">
-            <label className="mr-2 font-medium text-gray-700">Filter by Branch:</label>
+            <label className="mr-2 font-medium text-blue-500">Filter by Branch:</label>
             <select
               className="border border-gray-300 rounded-md px-3 py-1.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               value={selectedBranch}
               onChange={(e) => setSelectedBranch(e.target.value)}
             >
-              <option value="All">All</option>
+              <option className='bg-blue-900' value="All">All</option>
               {branches.map((branch, i) => (
-                <option key={i} value={branch}>{branch}</option>
+                <option className='bg-blue-900' key={i} value={branch}>{branch}</option>
               ))}
             </select>
           </div>
@@ -114,7 +114,7 @@ const StudentsProfile = () => {
                       <td className="px-4 py-2">
                         <button
                           onClick={() => viewStudentProfile(s)}
-                          className="text-blue-600 hover:text-blue-800 hover:cursor-pointer font-bold"
+                          className="text-blue-200 hover:text-blue-400 hover:cursor-pointer font-bold"
                         >
                           View <MdOutlineOpenInFull size={20} className="inline-block ml-1" />
                         </button>
