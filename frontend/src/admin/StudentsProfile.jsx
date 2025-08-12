@@ -30,8 +30,11 @@ const StudentsProfile = () => {
         });
         const data = await res.json();
         if (res.ok) {
-          setStudents(data);
-          setFilteredStudents(data);
+          const sortedData = [...data].sort((a, b) => Number(a.rollNumber) - Number(b.rollNumber))
+
+          setStudents(sortedData);
+          setFilteredStudents(sortedData);
+      
           const uniqueBranches = Array.from(
             new Set(data.map((s) => s.branch?.name).filter(Boolean))
           );
@@ -98,6 +101,7 @@ const StudentsProfile = () => {
                 <thead>
                   <tr className="bg-blue-50">
                     <th className="px-4 py-2 text-left">Name</th>
+                    <th className="px-4 py-2 text-left">Roll No.</th>
                     <th className="px-4 py-2 text-left">Email</th>
                     <th className="px-4 py-2 text-left">Branch</th>
                     <th className="px-4 py-2 text-left">CGPA</th>
@@ -108,6 +112,7 @@ const StudentsProfile = () => {
                   {filteredStudents.map((s, i) => (
                     <tr key={i} className="border-b">
                       <td className="px-4 py-2 font-medium">{s.name}</td>
+                      <td className="px-4 py-2">{s.rollNumber}</td>
                       <td className="px-4 py-2">{s.email}</td>
                       <td className="px-4 py-2">{s.branch?.name || ''}</td>
                       <td className="px-4 py-2">{s.cgpa}</td>
