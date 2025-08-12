@@ -80,13 +80,13 @@ const StudentsProfile = () => {
           <div className="mb-4">
             <label className="mr-2 font-medium text-blue-500">Filter by Branch:</label>
             <select
-              className="border border-gray-300 rounded-md px-3 py-1.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="border border-gray-300 rounded-md px-3 py-1.5 bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               value={selectedBranch}
               onChange={(e) => setSelectedBranch(e.target.value)}
             >
-              <option className='bg-blue-900' value="All">All</option>
+              <option value="All">All</option>
               {branches.map((branch, i) => (
-                <option className='bg-blue-900' key={i} value={branch}>{branch}</option>
+                <option key={i} value={branch}>{branch}</option>
               ))}
             </select>
           </div>

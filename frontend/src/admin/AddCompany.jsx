@@ -80,9 +80,9 @@ const AddCompany = () => {
       <br />
 
       {/* Allowed Branches */}
-      <div className="mb-6 mt-6">
-        <label className="block text-sm font-medium text-blue-500 mb-2 mt-2">
-          Allowed Branches
+      <div className="mb-6 mt-6 flex flex-col gap-2">
+        <label className="block text-sm font-medium text-blue-500 mb-4 mt-2">
+          Select Branch
         </label>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
           {branches.map(branch => {
@@ -93,17 +93,18 @@ const AddCompany = () => {
                 key={branch.id}
                 className={`flex items-center cursor-pointer rounded-lg px-3 py-2 border-2 transition-all duration-200 hover:shadow-sm ${
                   checked
-                    ? 'bg-blue-50 border-blue-200 text-blue-800'
+                    ? 'bg-blue-500 border-blue-200 text-white'
                     : 'border-gray-200 text-white hover:border-gray-300'
                 }`}
                 style={{ fontSize: '1.05rem' }}
               >
                 <input
                   type="checkbox"
-                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  className="rounded p-4 border-gray-300 text-blue-600 focus:ring-blue-500 hidden"
                   style={{
                     width: '20px',
                     height: '20px',
+                    padding: '4rem',
                     marginRight: '8px'
                   }}
                   value={idStr}
@@ -116,16 +117,16 @@ const AddCompany = () => {
                     }
                   }}
                 />
-                <span className="font-medium">{branch.name}</span>
+                <span className="font-medium px-4">{branch.name}</span>
               </label>
             );
           })}
         </div>
       </div>
       <br />
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6 flex flex-col gap-2">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
+          <div className='flex flex-col gap-2'>
             <label className="block text-sm font-medium text-blue-500 mb-1">Company Name</label>
             <input 
               placeholder="Name of the company"
@@ -136,7 +137,7 @@ const AddCompany = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" 
             />
           </div>
-          <div>
+          <div className='flex flex-col gap-2'>
             <label className="block text-sm font-medium text-blue-500 mb-1">Password</label>
             <input 
               type="password"
@@ -150,7 +151,7 @@ const AddCompany = () => {
         </div>
 
         {/* Roles */}
-        <div>
+        <div className='flex flex-col gap-2'>
           <label className="block text-sm font-medium text-blue-500 mb-2">Roles</label>
           <div className="space-y-2">
             {role.map((r, index) => (
@@ -205,7 +206,7 @@ const AddCompany = () => {
         </div>
         <br />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
+          <div className='flex flex-col gap-2'>
             <label className="block text-sm font-medium text-blue-500 mb-1">CGPA Criteria</label>
             <input 
               type="number" step="0.01" min="0" max="10"
@@ -216,7 +217,7 @@ const AddCompany = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" 
             />
           </div>
-          <div>
+          <div className='flex flex-col gap-2'>
             <label className="block text-sm font-medium text-blue-500 mb-1">CTC</label>
             <input 
               type="number" step="0.01" min="0"
@@ -230,7 +231,7 @@ const AddCompany = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
+          <div className='flex flex-col gap-2'>
             <label className="block text-sm font-medium text-blue-500 mb-1">Deadline</label>
             <input 
               type='datetime-local' 
@@ -240,7 +241,7 @@ const AddCompany = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" 
             />
           </div>
-          <div>
+          <div className='flex flex-col gap-2'>
             <label className="block text-sm font-medium text-blue-500 mb-1">Company File (Optional)</label>
             <input 
               type="file" 
@@ -251,7 +252,7 @@ const AddCompany = () => {
           </div>
         </div>
 
-        <div>
+        <div className='flex flex-col gap-2'>
           <label className="block text-sm font-medium text-blue-500 mb-1">Description</label>
           <textarea 
             rows={4}
