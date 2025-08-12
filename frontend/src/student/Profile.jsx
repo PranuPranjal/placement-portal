@@ -243,23 +243,23 @@ const ProfileForm = ({ student, branches, onCancel, onSave }) => {
                     </div>
                     <div>
                         <label className='text-white'>Email</label>
-                        <InputField name="email" value={student.email} disabled />
+                        <InputField className='hover:cursor-not-allowed' name="email" value={student.email} disabled />
                     </div>
                     <div>
-  <label className="text-white">Branch</label>
-  <select
-    name="branchId"
-    value={formData.branchId}
-    onChange={handleChange}
-    className="w-full p-2 rounded bg-gray-800 text-white"
-  >
-    {branches.map(branch => (
-      <option key={branch.id} value={branch.id}>
-        {branch.name}
-      </option>
-    ))}
-  </select>
-</div>
+                    <label className="text-white">Branch</label>
+                    <select
+                        name="branchId"
+                        value={formData.branchId}
+                        onChange={handleChange}
+                        className="w-full p-2 rounded bg-gray-800 text-white"
+                    >
+                        {branches.map(branch => (
+                        <option key={branch.id} value={branch.id}>
+                            {branch.name}
+                        </option>
+                        ))}
+                    </select>
+                    </div>
                 </div>
             </div>
 
