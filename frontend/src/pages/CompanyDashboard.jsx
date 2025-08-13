@@ -3,6 +3,7 @@ import { Routes, Route, Link, useNavigate } from 'react-router-dom';
 import CompanyApplicants from '../company/CompanyApplicants';
 import Header from '../components/Header';
 import Sidebar from '../components/SideBar';
+import { FaFile } from 'react-icons/fa';
 
 const CompanyDashboard = () => {
   const [companyProfile, setCompanyProfile] = useState(null);
@@ -126,11 +127,11 @@ const CompanyDashboard = () => {
 // Company Home Component
 const CompanyHome = ({ companyProfile }) => {
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">
+    <div className="flex flex-col gap-4 bg-white rounded-xl shadow p-6 relative">
+      <h1 className="text-lg font-semibold text-blue-700 mb-4">
         Welcome, {companyProfile.company.name}!
       </h1>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div className="bg-white rounded-lg shadow p-6">
           <h3 className="text-lg font-semibold text-gray-800 mb-2">Company Details</h3>
@@ -174,78 +175,72 @@ const CompanyHome = ({ companyProfile }) => {
 // Company Profile Component
 const CompanyProfile = ({ companyProfile }) => {
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Company Profile</h1>
-      
-      <div className="bg-white rounded-lg shadow p-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Company Information</h3>
-            <div className="space-y-3">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Company Name</label>
-                <p className="text-gray-900">{companyProfile.company.name}</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Role</label>
-                <p className="text-gray-900">{companyProfile.company.role}</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Salary</label>
-                <p className="text-gray-900">₹{companyProfile.company.salary.toLocaleString()}</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">CGPA Criteria</label>
-                <p className="text-gray-900">{companyProfile.company.cgpaCriteria}</p>
-              </div>
+    <div className="flex flex-col gap-4 bg-white rounded-xl shadow p-6 relative">
+      <h1 className="text-lg font-semibold text-blue-700 mb-4">Company Profile</h1>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <h3 className="text-lg font-semibold text-blue-500 mb-4">Company Information</h3>
+          <div className="space-y-3">
+            <div>
+              <label className="block text-sm font-medium text-blue-300">Company Name</label>
+              <p className="text-white">{companyProfile.company.name}</p>
             </div>
-          </div>
-          
-          <div>
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">Contact Information</h3>
-            <div className="space-y-3">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Email</label>
-                <p className="text-gray-900">{companyProfile.user.email}</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Application Deadline</label>
-                <p className="text-gray-900">{new Date(companyProfile.company.deadline).toLocaleDateString()}</p>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Description</label>
-                <p className="text-gray-900">{companyProfile.company.description || 'No description available'}</p>
-              </div>
+            <div>
+              <label className="block text-sm font-medium text-blue-300">Role</label>
+              <p className="text-white">{companyProfile.company.role}</p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-blue-300">Salary</label>
+              <p className="text-white">₹{companyProfile.company.salary.toLocaleString()}</p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-blue-300">CGPA Criteria</label>
+              <p className="text-white">{companyProfile.company.cgpaCriteria}</p>
             </div>
           </div>
         </div>
-        
-        {companyProfile.company.filePath && (
-          <div className="mt-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">Company File</label>
-            <a 
-              href={`http://localhost:5000/uploads/${companyProfile.company.filePath}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:text-blue-800 underline"
-            >
-              View Company File
-            </a>
+
+        <div>
+          {/* <h3 className="text-lg font-semibold text-blue-500 mb-4">Contact Information</h3> */}
+          <div className="space-y-3">
+            <div>
+              <label className="block text-sm font-medium text-blue-300">Application Deadline</label>
+              <p className="text-white">{new Date(companyProfile.company.deadline).toLocaleDateString()}</p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-blue-300">Description</label>
+              <p className="text-white">{companyProfile.company.description || 'No description available'}</p>
+            </div>
           </div>
-        )}
-        
+        </div>
+      </div>
+
+      {companyProfile.company.filePath && (
         <div className="mt-6">
-          <h4 className="text-md font-semibold text-gray-800 mb-2">Allowed Branches</h4>
-          <div className="flex flex-wrap gap-2">
-            {companyProfile.company.allowedBranches.map((ab) => (
-              <span 
-                key={ab.id}
-                className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded"
-              >
-                {ab.branch.name}
-              </span>
-            ))}
-          </div>
+          <label className="block text-sm font-medium text-blue-500 mb-2">Company File</label>
+          <a 
+            href={`http://localhost:5000/uploads/${companyProfile.company.filePath}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-300 hover:text-blue-800"
+          >
+            <span className='flex items-center gap-2'><FaFile />View Company File</span>
+          </a>
+        </div>
+      )}
+
+      <div className="mt-6">
+        <h4 className="text-md font-semibold text-blue-500 mb-2">Allowed Branches</h4>
+        <div className="flex flex-wrap gap-2">
+          {companyProfile.company.allowedBranches.map((ab) => (
+            <span 
+              key={ab.id}
+              className="bg-gray-700 text-white text-l px-2 py-1 rounded"
+            >
+              {ab.branch.name}
+            </span>
+          ))}
         </div>
       </div>
     </div>

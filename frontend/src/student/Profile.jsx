@@ -388,31 +388,43 @@ const InputField = ({ label, ...props }) => (
     </div>
 );
 
-const SelectField = ({ label, options, ...props }) => (
-    <div>
-        <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.25rem' }}>{label}</label>
-        <select {...props} style={{ width: '100%', padding: '0.5rem 1rem', border: '1px solid #d1d5db', borderRadius: '0.5rem' }}>
-            {options.map(opt => <option key={opt.id} value={opt.id}>{opt.name}</option>)}
-        </select>
-    </div>
-);
+const FileInputField = ({ label, name, onChange, currentPath, type, accept = ".pdf,.doc,.docx" }) => {
+  const [fileName, setFileName] = useState('');
 
-const FileInputField = ({ label, name, onChange, currentPath, type, accept = ".pdf,.doc,.docx" }) => (
-    <div>
-        <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '500', color: '#374151', marginBottom: '0.25rem' }}>{label}</label>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <label style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0.5rem 1rem', backgroundColor: 'white', color: '#3b82f6', borderRadius: '0.5rem', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)', textTransform: 'uppercase', border: '1px solid #3b82f6', cursor: 'pointer' }}>
-                <FaUpload style={{ marginRight: '0.5rem' }} />
-                <span style={{ fontSize: '1rem', lineHeight: '1.5' }}>Select a file</span>
-                <input type='file' name={name} style={{ display: 'none' }} onChange={onChange} accept={accept} />
-            </label>
-            {currentPath && (
-                <a href={`http://localhost:5000/${type}/${currentPath}`} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'underline', whiteSpace: 'nowrap' }}>
-                    View Current
-                </a>
-            )}
-        </div>
+  const handleChange = (e) => {
+    const file = e.target.files[0];
+    if (file) setFileName(file.name);
+    onChange(e);
+  };
+
+  return (
+    <div className="flex flex-col">
+      <label className="block text-sm font-medium text-gray-300 mb-1">{label}</label>
+      <div className="flex items-center gap-2">
+        <label className="flex-1 flex items-center justify-center gap-2 p-2 bg-white text-blue-600 border border-blue-600 rounded-md shadow-sm cursor-pointer hover:bg-blue-50">
+          <FaUpload />
+          <span className="truncate">{fileName || "Select a file"}</span>
+          <input
+            type="file"
+            name={name}
+            className="hidden"
+            onChange={handleChange}
+            accept={accept}
+          />
+        </label>
+        {currentPath && !fileName && (
+          <a
+            href={`http://localhost:5000/${type}/${currentPath}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-blue-600 underline truncate"
+          >
+            View Current
+          </a>
+        )}
+      </div>
     </div>
-);
+  );
+};
 
 export default Profile;

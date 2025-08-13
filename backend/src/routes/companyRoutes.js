@@ -94,14 +94,18 @@ router.get('/applicants', async (req, res) => {
         name: app.student.name,
         email: app.student.email,
         branch: app.student.branch.name,
-        role: app.role, // Role applied for (from the application)
+        role: app.role, 
         cgpa: app.student.cgpa,
         cvPath: app.student.cvPath,
         photoPath: app.student.photoPath,
         aadharPath: app.student.aadharPath,
         ugMarksheetPath: app.student.ugMarksheetPath,
         xMarksheetPath: app.student.xMarksheetPath,
-        xiiMarksheetPath: app.student.xiiMarksheetPath
+        xiiMarksheetPath: app.student.xiiMarksheetPath,
+        rollNumber: app.student.rollNumber,
+        registrationNumber: app.student.registrationNumber,
+        XPercentage: app.student.XPercentage,
+        XIIPercentage: app.student.XIIPercentage
       },
       status: app.status,
       appliedAt: new Date() // Using current date since createdAt field doesn't exist
