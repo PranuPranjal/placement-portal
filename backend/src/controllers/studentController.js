@@ -143,30 +143,44 @@ exports.eligibleCompanies = async (req, res) => {
 
 exports.applyCompany = async (req, res) => {
   const { companyId } = req.params;
-  const selectedRole = req.body.selectedRole; // Get selectedRole from FormData
+  const { selectedRole, xpercentage, xiipercentage, rollNumber, registrationNumber } = req.body;
   const studentId = req.user.id;
-  const cvFile = req.file; // Uploaded CV file
-  
-  console.log('Apply company request:', { companyId, studentId, selectedRole, cvFile: cvFile ? cvFile.filename : 'none' });
-  
+  const cvFile = req.file;
+
   try {
-    // If a new CV was uploaded, update the student's CV
+    const updateData = {};
     if (cvFile) {
+      updateData.cvPath = cvFile.filename;
+    }
+    if (xpercentage) {
+      updateData.XPercentage = parseFloat(xpercentage);
+    }
+    if (xiipercentage) {
+      updateData.XIIPercentage = parseFloat(xiipercentage);
+    }
+    if (rollNumber) {
+      updateData.rollNumber = parseInt(rollNumber);
+    }
+    if (registrationNumber) {
+      updateData.registrationNumber = parseInt(registrationNumber);
+    }
+
+    if (Object.keys(updateData).length > 0) {
       await prisma.student.update({
         where: { id: studentId },
-        data: { cvPath: cvFile.filename }
+        data: updateData
       });
-      console.log('Updated student CV:', cvFile.filename);
+      console.log('Updated student profile fields:', updateData);
     }
-    
+
     const application = await prisma.application.create({
-      data: { 
-        studentId: parseInt(studentId), 
+      data: {
+        studentId: parseInt(studentId),
         companyId: parseInt(companyId),
-        role: selectedRole // Store the role applied for
+        role: selectedRole
       }
     });
-    
+
     console.log('Application created successfully:', application);
     res.json(application);
   } catch (err) {

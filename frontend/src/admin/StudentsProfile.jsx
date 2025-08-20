@@ -16,9 +16,13 @@ const StudentsProfile = () => {
   const [selectedBranch, setSelectedBranch] = React.useState('All');
   const [selectedStudent, setSelectedStudent] = React.useState(null);
   const [showProfile, setShowProfile] = React.useState(false);
+  const [isStudentListVisible, setIsStudentListVisible] = React.useState(true);
+  const [loading, setLoading] = React.useState(false);
+
 
   React.useEffect(() => {
     const fetchStudents = async () => {
+      setLoading(true);
       try {
         const token = localStorage.getItem('token');
         const res = await fetch('/api/admin/users', {
@@ -26,8 +30,11 @@ const StudentsProfile = () => {
         });
         const data = await res.json();
         if (res.ok) {
-          setStudents(data);
-          setFilteredStudents(data);
+          const sortedData = [...data].sort((a, b) => Number(a.rollNumber) - Number(b.rollNumber))
+
+          setStudents(sortedData);
+          setFilteredStudents(sortedData);
+      
           const uniqueBranches = Array.from(
             new Set(data.map((s) => s.branch?.name).filter(Boolean))
           );
@@ -37,6 +44,8 @@ const StudentsProfile = () => {
         }
       } catch (error) {
         console.error("Error fetching students:", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchStudents();
@@ -54,73 +63,84 @@ const StudentsProfile = () => {
     window.scrollTo(0, 0);
     setSelectedStudent(student);
     setShowProfile(true);
+    setIsStudentListVisible(false);
   };
 
   const closeProfile = () => {
     setShowProfile(false);
     setSelectedStudent(null);
+    setIsStudentListVisible(true);
   };
 
   return (
-    <div className="bg-white rounded-xl shadow p-6 relative">
+    <div className="bg-white rounded-xl shadow p-6 relative min-h-screen">
       {showProfile && selectedStudent && (
-        <ProfileOverlay student={selectedStudent} onClose={closeProfile} />
+        <ProfileOverlay student={selectedStudent} onCloseProfile={closeProfile} />
       )}
-      <h3 className="text-lg font-semibold text-blue-700 mb-4">Students Profile</h3>
-      <div className="mb-4">
-        <label className="mr-2 font-medium text-gray-700">Filter by Branch:</label>
-        <select
-          className="border border-gray-300 rounded-md px-3 py-1.5 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          value={selectedBranch}
-          onChange={(e) => setSelectedBranch(e.target.value)}
-        >
-          <option value="All">All</option>
-          {branches.map((branch, i) => (
-            <option key={i} value={branch}>{branch}</option>
-          ))}
-        </select>
-      </div>
-
-      <div className="overflow-x-auto">
-        <table className="min-w-full text-sm text-gray-700">
-          <thead>
-            <tr className="bg-blue-50">
-              <th className="px-4 py-2 text-left">Name</th>
-              <th className="px-4 py-2 text-left">Email</th>
-              <th className="px-4 py-2 text-left">Branch</th>
-              <th className="px-4 py-2 text-left">CGPA</th>
-              <th className="px-4 py-2 text-left">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredStudents.map((s, i) => (
-              <tr key={i} className="border-b hover:bg-blue-50">
-                <td className="px-4 py-2 font-medium">{s.name}</td>
-                <td className="px-4 py-2">{s.email}</td>
-                <td className="px-4 py-2">{s.branch?.name || ''}</td>
-                <td className="px-4 py-2">{s.cgpa}</td>
-                <td className="px-4 py-2">
-                  <button
-                    onClick={() => viewStudentProfile(s)}
-                    className="text-blue-600 hover:text-blue-800 hover:cursor-pointer font-bold"
-                  >
-                    View <MdOutlineOpenInFull size={20} className="inline-block ml-1" />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+     {isStudentListVisible && (
+        <div>
+          <h3 className="text-lg font-semibold text-blue-700 mb-4">Students Profile</h3>
+          <div className="mb-4">
+            <label className="mr-2 font-medium text-blue-500">Filter by Branch:</label>
+            <select
+              className="border border-gray-300 rounded-md px-3 py-1.5 bg-gray-800 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              value={selectedBranch}
+              onChange={(e) => setSelectedBranch(e.target.value)}
+            >
+              <option value="All">All</option>
+              {branches.map((branch, i) => (
+                <option key={i} value={branch}>{branch}</option>
+              ))}
+            </select>
+          </div>
+          {loading ? (
+            <p>Loading...</p>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="min-w-full text-sm text-gray-700">
+                <thead>
+                  <tr className="bg-blue-50">
+                    <th className="px-4 py-2 text-left">Name</th>
+                    <th className="px-4 py-2 text-left">Roll No.</th>
+                    <th className="px-4 py-2 text-left">Email</th>
+                    <th className="px-4 py-2 text-left">Branch</th>
+                    <th className="px-4 py-2 text-left">CGPA</th>
+                    <th className="px-4 py-2 text-left">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredStudents.map((s, i) => (
+                    <tr key={i} className="border-b">
+                      <td className="px-4 py-2 font-medium">{s.name}</td>
+                      <td className="px-4 py-2">{s.rollNumber}</td>
+                      <td className="px-4 py-2">{s.email}</td>
+                      <td className="px-4 py-2">{s.branch?.name || ''}</td>
+                      <td className="px-4 py-2">{s.cgpa}</td>
+                      <td className="px-4 py-2">
+                        <button
+                          onClick={() => viewStudentProfile(s)}
+                          className="text-blue-200 hover:text-blue-400 hover:cursor-pointer font-bold"
+                        >
+                          View <MdOutlineOpenInFull size={20} className="inline-block ml-1" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
 
-const ProfileOverlay = ({ student, onClose }) => (
-    <div className="absolute inset-0 bg-white rounded-xl p-6 z-20" style={{ maxHeight: '95vh', padding: '1.5rem', overflowY: 'auto' }}>
+const ProfileOverlay = ({ student, onCloseProfile }) => (
+    <div className="absolute inset-0 rounded-xl p-6 z-20" style={{ maxHeight: '95vh', background: 'transparent', padding: '1.5rem', overflowY: 'auto' }}>
         <div className="flex justify-between items-center mb-4">
             <h3 className="text-xl font-semibold text-blue-600">Student Profile</h3>
-            <button onClick={onClose} className="text-gray-400 hover:cursor-pointer hover:text-gray-600">
+            <button onClick={onCloseProfile} className="text-gray-400 hover:cursor-pointer hover:text-red-600">
                 <FaTimes size={24} />
             </button>
         </div>
@@ -129,8 +149,8 @@ const ProfileOverlay = ({ student, onClose }) => (
 );
 
 const ProfileView = ({ student }) => (
-  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', padding: '1.5rem', backgroundColor: '#f9fafb', borderRadius: '0.5rem' }}>
-    <div style={{ padding: '1.5rem', backgroundColor: '#f9fafb', borderRadius: '0.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', padding: '1.5rem', borderRadius: '0.5rem' }}>
+    <div style={{ padding: '1.5rem', borderRadius: '0.5rem', display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
         {student.photoPath ? (
             <img
                 src={`http://localhost:5000/uploadphoto/${student.photoPath}`}
@@ -141,50 +161,50 @@ const ProfileView = ({ student }) => (
             <FaUserCircle style={{ width: '6rem', height: '6rem', color: '#d1d5db' }} />
         )}
         <div>
-            <h1 style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1f2937' }}>{student.name || 'Your Name'}</h1>
-            <p style={{ fontSize: '1rem', color: '#6b7280' }}>{student.email}</p>
-            <p style={{ fontSize: '0.875rem', color: '#3b82f6', fontWeight: '600', marginTop: '0.25rem' }}>
+            <h1 style={{ fontSize: '2rem', fontWeight: 'bold', color: 'white' }}>{student.name || 'Your Name'}</h1>
+            <p style={{ fontSize: '1rem', color: 'white' }}>{student.email}</p>
+            <p style={{ fontSize: '0.875rem', color: 'white', fontWeight: '600', marginTop: '0.25rem' }}>
                 {student.branch ? student.branch.name : 'Branch'} • CGPA: {student.cgpa ?? '-'}
             </p>
         </div>
     </div>
 
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem' }}>
-        <div style={{ padding: '1.5rem', backgroundColor: '#f9fafb', borderRadius: '0.5rem' }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1rem' }}>Personal & Academic Details</h2>
+        <div style={{ background: 'transparent', border: '1px solid #4c4a4aff', padding: '1.5rem', borderRadius: '0.5rem' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1d75f1ff', marginBottom: '1rem' }}>Personal & Academic Details</h2>
             <ul style={{ display: 'flex', flexDirection: 'column', gap: '1rem', fontSize: '1rem' }}>
                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ fontWeight: '600', color: '#4b5563' }}>Name:</span>
-                    <span>{student.name || '-'}</span>
+                    <span style={{ fontWeight: '600', color: '#fff' }}>Name:</span>
+                    <span style={{ color: '#fff' }}>{student.name || '-'}</span>
                 </li>
                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ fontWeight: '600', color: '#4b5563' }}>Email:</span>
-                    <span>{student.email || '-'}</span>
+                    <span style={{ fontWeight: '600', color: '#fff' }}>Email:</span>
+                    <span style={{ color: '#fff' }}>{student.email || '-'}</span>
                 </li>
                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ fontWeight: '600', color: '#4b5563' }}>Branch:</span>
-                    <span>{student.branch ? student.branch.name : '-'}</span>
+                    <span style={{ fontWeight: '600', color: '#fff' }}>Branch:</span>
+                    <span style={{ color: '#fff' }}>{student.branch ? student.branch.name : '-'}</span>
                 </li>
                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ fontWeight: '600', color: '#4b5563' }}>CGPA:</span>
-                    <span>{student.cgpa ?? '-'}</span>
+                    <span style={{ fontWeight: '600', color: '#fff' }}>CGPA:</span>
+                    <span style={{ color: '#fff' }}>{student.cgpa ?? '-'}</span>
                 </li>
                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ fontWeight: '600', color: '#4b5563' }}>X %:</span>
-                    <span>{student.XPercentage ?? '-'}</span>
+                    <span style={{ fontWeight: '600', color: '#fff' }}>X %:</span>
+                    <span style={{ color: '#fff' }}>{student.XPercentage ?? '-'}</span>
                 </li>
                 <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span style={{ fontWeight: '600', color: '#4b5563' }}>XII %:</span>
-                    <span>{student.XIIPercentage ?? '-'}</span>
+                    <span style={{ fontWeight: '600', color: '#fff' }}>XII %:</span>
+                    <span style={{ color: '#fff' }}>{student.XIIPercentage ?? '-'}</span>
                 </li>
                  <li style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span style={{ fontWeight: '600', color: '#4b5563' }}>Roll / Reg:</span>
-                  <span>{student.rollNumber || '-'} / {student.registrationNumber || '-'}</span>
+                  <span style={{ fontWeight: '600', color: '#fff' }}>Roll / Reg:</span>
+                  <span style={{ color: '#fff' }}>{student.rollNumber || '-'} / {student.registrationNumber || '-'}</span>
                 </li>
             </ul>
         </div>
-        <div style={{ padding: '1.5rem', backgroundColor: '#f9fafb', borderRadius: '0.5rem' }}>
-            <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1f2937', marginBottom: '1rem' }}>Documents</h2>
+        <div style={{ padding: '1.5rem', background: 'transparent', border: '1px solid #4c4a4aff', borderRadius: '0.5rem' }}>
+            <h2 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1d75f1ff', marginBottom: '1rem' }}>Documents</h2>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
                 <DocumentItem icon={<FaFilePdf style={{ color: '#ef4444' }} />} label="CV" path={student.cvPath} type="uploadcv" />
                 <DocumentItem icon={<FaIdCard style={{ color: '#6366f1' }} />} label="Aadhar" path={student.aadharPath} type="uploadaadhar" />

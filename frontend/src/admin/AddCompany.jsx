@@ -77,11 +77,12 @@ const AddCompany = () => {
   return (
     <div className="bg-white rounded-xl shadow p-6 max-w-3xl mx-auto" style={{ marginLeft: '15rem'}}>
       <h3 className="text-lg font-semibold text-blue-700 mb-6">Add New Company</h3>
+      <br />
 
       {/* Allowed Branches */}
-      <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Allowed Branches
+      <div className="mb-6 mt-6 flex flex-col gap-2">
+        <label className="block text-sm font-medium text-blue-500 mb-4 mt-2">
+          Select Branch
         </label>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
           {branches.map(branch => {
@@ -92,17 +93,18 @@ const AddCompany = () => {
                 key={branch.id}
                 className={`flex items-center cursor-pointer rounded-lg px-3 py-2 border-2 transition-all duration-200 hover:shadow-sm ${
                   checked
-                    ? 'bg-blue-50 border-blue-200 text-blue-800'
-                    : 'bg-white border-gray-200 text-gray-700 hover:border-gray-300'
+                    ? 'bg-blue-500 border-blue-200 text-white'
+                    : 'border-gray-200 text-white hover:border-gray-300'
                 }`}
                 style={{ fontSize: '1.05rem' }}
               >
                 <input
                   type="checkbox"
-                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  className="rounded p-4 border-gray-300 text-blue-600 focus:ring-blue-500 hidden"
                   style={{
                     width: '20px',
                     height: '20px',
+                    padding: '4rem',
                     marginRight: '8px'
                   }}
                   value={idStr}
@@ -115,17 +117,17 @@ const AddCompany = () => {
                     }
                   }}
                 />
-                <span className="font-medium">{branch.name}</span>
+                <span className="font-medium px-4">{branch.name}</span>
               </label>
             );
           })}
         </div>
       </div>
       <br />
-      <form onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6 flex flex-col gap-2">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+          <div className='flex flex-col gap-2'>
+            <label className="block text-sm font-medium text-blue-500 mb-1">Company Name</label>
             <input 
               placeholder="Name of the company"
               value={name}
@@ -135,8 +137,8 @@ const AddCompany = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" 
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+          <div className='flex flex-col gap-2'>
+            <label className="block text-sm font-medium text-blue-500 mb-1">Password</label>
             <input 
               type="password"
               placeholder="Set company login password"
@@ -149,8 +151,8 @@ const AddCompany = () => {
         </div>
 
         {/* Roles */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Roles</label>
+        <div className='flex flex-col gap-2'>
+          <label className="block text-sm font-medium text-blue-500 mb-2">Roles</label>
           <div className="space-y-2">
             {role.map((r, index) => (
               <div key={index} style={{ display: 'flex', alignItems: 'stretch', gap: '8px' }}>
@@ -204,8 +206,8 @@ const AddCompany = () => {
         </div>
         <br />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">CGPA Criteria</label>
+          <div className='flex flex-col gap-2'>
+            <label className="block text-sm font-medium text-blue-500 mb-1">CGPA Criteria</label>
             <input 
               type="number" step="0.01" min="0" max="10"
               placeholder="Minimum CGPA Required"
@@ -215,8 +217,8 @@ const AddCompany = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" 
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">CTC</label>
+          <div className='flex flex-col gap-2'>
+            <label className="block text-sm font-medium text-blue-500 mb-1">CTC</label>
             <input 
               type="number" step="0.01" min="0"
               placeholder="CTC in LPA"
@@ -229,8 +231,8 @@ const AddCompany = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Deadline</label>
+          <div className='flex flex-col gap-2'>
+            <label className="block text-sm font-medium text-blue-500 mb-1">Deadline</label>
             <input 
               type='datetime-local' 
               value={deadline}
@@ -239,8 +241,8 @@ const AddCompany = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" 
             />
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Company File (Optional)</label>
+          <div className='flex flex-col gap-2'>
+            <label className="block text-sm font-medium text-blue-500 mb-1">Company File (Optional)</label>
             <input 
               type="file" 
               onChange={e => setFile(e.target.files[0])} 
@@ -250,8 +252,8 @@ const AddCompany = () => {
           </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+        <div className='flex flex-col gap-2'>
+          <label className="block text-sm font-medium text-blue-500 mb-1">Description</label>
           <textarea 
             rows={4}
             placeholder="Brief job description, responsibilities, requirements..."
